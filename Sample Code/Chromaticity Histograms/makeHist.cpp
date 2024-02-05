@@ -3,7 +3,7 @@
   Spring 2024
   CS 5330
 
-  Generate a histogram, displaa a visualization of it.
+  Generate a histogram, display a visualization of it.
 */
 
 
