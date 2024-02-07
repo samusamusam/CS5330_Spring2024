@@ -10,9 +10,10 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <vector>
 
-using namespace cv;
 using namespace std;
+using namespace cv;
 
 int main(int argc, char *argv[])
 {
@@ -20,20 +21,21 @@ int main(int argc, char *argv[])
     cout << "Welcome to the image matching program." << endl;
     cout << "You may press 'q' at any time to exit the program." << endl; // TODO: implement this
 
-    // have user select directory of images
-    cout << "To get started, please first define the directory that your images are located in." << endl;
-    string directory_path;
-    getline(cin, directory_path);
-    cout << "Directory path set to: " << directory_path << endl;
-
     // store the return response variable for creating feature CSV files
     int createFeatureCSVFilesResponse = 1;
+    char directory_path[256];
 
     while (createFeatureCSVFilesResponse != 0)
     {
+        // have user select directory of images
+        cout << "To get started, please first define the directory that your images are located in." << endl;
+        cin.getline(directory_path, 256);
+        cout << "Directory path set to: " << directory_path << endl;
+
         // create all feature csv files
         cout << "Creating all feature csv files for the directory of images..." << endl;
-        int createFeatureCSVFilesResponse = createFeatureCSVFiles(directory_path);
+        createFeatureCSVFilesResponse = createFeatureCSVFiles(directory_path);
+    
         if (createFeatureCSVFilesResponse == -1)
         {
             cout << "Directory could not be opened. Try entering a new directory." << endl;
@@ -47,6 +49,23 @@ int main(int argc, char *argv[])
     // successfully created all CSV feature files
     cout << "Finished creating CSV files for all features." << endl;
 
+    // ask user for target image
+    string targetImgName;
+    string targetImgPath;
+    Mat targetImg;
+    do
+    {
+        cout << "Choose the target image in the directory: " + string(directory_path) + "." << endl;
+        getline(cin, targetImgName);
+        targetImgPath = string(directory_path) + "/" + targetImgName;
+
+        targetImg = imread(targetImgPath); // attempt to read the targetImgName
+        if (!targetImg.data)
+        {
+            cerr << "Error: Unable to load the image. Please make sure you put in the correct path." << endl;
+        }
+    } while (!targetImg.data);
+
     // options for image matching
     string input;
     int option = 0;
@@ -57,20 +76,6 @@ int main(int argc, char *argv[])
     cout << "3. " << endl;
     cout << "4. " << endl;
     cout << "5. " << endl;
-
-    // ask user for target image
-    string targetImgPath;
-    Mat targetImg;
-    do
-    {
-        cout << "Choose the target image by specifying the full path." << endl;
-        getline(cin, targetImgPath);
-        targetImg = imread(targetImgPath); // attempt to read the targetImgPath
-        if (!targetImg.data())
-        {
-            cerr << "Error: Unable to load the image. Please make sure you put in the correct path." << endl;
-        }
-    } while (!targetImg.data());
 
     // get user input on matching type
     do
@@ -122,7 +127,7 @@ int main(int argc, char *argv[])
     switch (option)
     {
     case 1: // Baseline Matching 7x7 middle filter
-        feature7x7Matching(targetImg, targetImgPath, numMatches, matches);
+        features7x7Matching(targetImg, targetImgPath, numMatches, matches);
         break;
     case 2:
 
@@ -139,28 +144,35 @@ int main(int argc, char *argv[])
     }
 
     // if no matches found
-    if(matches.size() < 0) {
+    if (matches.size() < 0)
+    {
         cerr << "No matches found. Please try again." << endl;
     }
 
     // show target image
     cout << "Showing target image." << endl;
-    namedWindow("Target - " + targetImgPath, WINDOW_NORMAL);
-    imshow("Target - " + targetImgPath, targetImg);
+    namedWindow("Target - " + targetImgName, WINDOW_NORMAL);
+    imshow("Target - " + targetImgName, targetImg);
 
     // show all matched images
     cout << "Showing all image matches." << endl;
     Mat matchedImg;
-    for(int i = 0; i < numMatches; i++) {
+    for (int i = 0; i < numMatches; i++)
+    {
         matchedImg = imread(matches[i]);
-        if (!matchedImg.empty()) { // Check if the image was loaded successfully
-            namedWindow("Matched Image " + to_string(i+1), WINDOW_NORMAL);
-            imshow("Matched Image " + to_string(i+1), matchedImg);
+        if (!matchedImg.empty())
+        { // Check if the image was loaded successfully
+            namedWindow("Matched Image " + to_string(i + 1) + " - " + matches[i], WINDOW_NORMAL);
+            imshow("Matched Image " + to_string(i + 1) + " - " + matches[i], matchedImg);
         }
-        else {
+        else
+        {
             cerr << "Error: Unable to load matched image at path: " << matches[i] << endl;
         }
     }
+
+    waitKey(0);
+    cv::destroyAllWindows();
 
     return (0);
 }

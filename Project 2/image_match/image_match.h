@@ -8,8 +8,13 @@
 #ifndef IMAGE_MATCH_H
 #define IMAGE_MATCH_H
 
-#define SSD(a, b) ( ((int)a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]) + (a[2]-b[2])*(a[2]-b[2]) )
+#include <vector>
+#include <string>
+#include "opencv2/opencv.hpp"
 
-int 
+using namespace cv;
+using namespace std;
+
+int features7x7Matching(const Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
 
 #endif

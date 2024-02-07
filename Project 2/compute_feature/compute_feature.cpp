@@ -8,8 +8,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <dirent.h>
-#include <../csv_util/csv_util.h>
 #include <vector>
+#include "../csv_util/csv_util.h"
 #include "opencv2/opencv.hpp"
 
 using namespace std;
@@ -21,7 +21,7 @@ using namespace cv;
  * img - the image to get the features for
  * features - the features of the vector to be stored
  */
-int feature7x7(vector<Vec3b> &img, vector<float> &features)
+int feature7x7(const Mat &img, vector<float> &features)
 {
 
   features.clear(); // empty features vector
@@ -42,9 +42,10 @@ int feature7x7(vector<Vec3b> &img, vector<float> &features)
   {
     for (int j = 0; j < 7; j++)
     {
+      Vec3b pixel = img.at<Vec3b>(rowStart + i, colStart + j);
       for (int k = 0; k < 3; k++)
       {
-        features.push_back(img[rowStart + i][colStart + j][k]);
+        features.push_back(pixel[k]);
       }
     }
   }
@@ -56,14 +57,23 @@ int feature7x7(vector<Vec3b> &img, vector<float> &features)
  * This function creates the feature csv files given the directory of images.
  * The following csv files are created:
  *  1. feature7x7.csv
- *  2. 
+ *  2.
  * dirname - the name of the directory
  */
-int createFeatureCSVFiles(const char *dirname)
+int createFeatureCSVFiles(char *dirname)
 {
   // declare feature CSV file names
-  char *feature7x7CSV = "../features/feature7x7.csv";
+  char feature7x7CSV[] = "../features/feature7x7.csv";
 
+  // delete the csv files if they exist
+  if (remove(feature7x7CSV) != 0)
+  {
+    std::cerr << "Error: Failed to delete file: " << feature7x7CSV << endl;
+  }
+
+  cout << "File " << feature7x7CSV << " has been deleted." << endl;
+
+  // declare variables for reading the image files
   char buffer[256];
   FILE *fp;
   DIR *dirp;
@@ -78,11 +88,8 @@ int createFeatureCSVFiles(const char *dirname)
   if (dirp == NULL)
   {
     printf("Cannot open directory %s\n", dirname);
-    return(-1);
+    return (-1);
   }
-
-  // initialize file index counter
-  int fileIndex = 0;
 
   // initialize boolean flag for whether the csv files were created
   bool csvCreated = false;
@@ -116,14 +123,13 @@ int createFeatureCSVFiles(const char *dirname)
 
       // calculate the 7x7 feature and append it to the csv file
       feature7x7(currentImg, feature7x7vector);
-      append_image_data_csv(feature7x7CSV, dp->d_name, feature7x7vector, fileIndex == 0 ? 1 : 0);
+      append_image_data_csv(feature7x7CSV, buffer, feature7x7vector, 0);
     }
-    // add one to the file index
-    fileIndex++;
   }
-  if(!csvCreated) {
+  if (!csvCreated)
+  {
     return -2;
   }
 
-  return (0);
+  return 0;
 }

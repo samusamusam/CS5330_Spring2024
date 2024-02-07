@@ -25,9 +25,9 @@ using namespace cv;
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
 */
-int features7x7Matching(const vector<Vec3b> &img, string &targetImagePath, int numMatches, vector<string> &matches) {
+int features7x7Matching(const Mat &img, string &targetImagePath, int numMatches, vector<string> &matches) {
   // read csv file and store values 
-  string csvFilePath = "../features/feature7x7.csv";
+  char *csvFilePath = "../features/feature7x7.csv";
   matches.clear();
   vector<char *> imgFileNames;
   vector<vector<float>> imgFeatureData;
@@ -56,6 +56,7 @@ int features7x7Matching(const vector<Vec3b> &img, string &targetImagePath, int n
   // get file name matches
   while (!smallestSSD.empty()) {
     matches.push_back(imgFileNames[smallestSSD.top().second]);
+    cout << imgFileNames[smallestSSD.top().second] << endl;
     smallestSSD.pop();
   }
 

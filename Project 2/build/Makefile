@@ -129,6 +129,78 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+compute_feature/compute_feature.o: compute_feature/compute_feature.cpp.o
+.PHONY : compute_feature/compute_feature.o
+
+# target to build an object file
+compute_feature/compute_feature.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/compute_feature/compute_feature.cpp.o
+.PHONY : compute_feature/compute_feature.cpp.o
+
+compute_feature/compute_feature.i: compute_feature/compute_feature.cpp.i
+.PHONY : compute_feature/compute_feature.i
+
+# target to preprocess a source file
+compute_feature/compute_feature.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/compute_feature/compute_feature.cpp.i
+.PHONY : compute_feature/compute_feature.cpp.i
+
+compute_feature/compute_feature.s: compute_feature/compute_feature.cpp.s
+.PHONY : compute_feature/compute_feature.s
+
+# target to generate assembly for a file
+compute_feature/compute_feature.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/compute_feature/compute_feature.cpp.s
+.PHONY : compute_feature/compute_feature.cpp.s
+
+csv_util/csv_util.o: csv_util/csv_util.cpp.o
+.PHONY : csv_util/csv_util.o
+
+# target to build an object file
+csv_util/csv_util.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/csv_util/csv_util.cpp.o
+.PHONY : csv_util/csv_util.cpp.o
+
+csv_util/csv_util.i: csv_util/csv_util.cpp.i
+.PHONY : csv_util/csv_util.i
+
+# target to preprocess a source file
+csv_util/csv_util.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/csv_util/csv_util.cpp.i
+.PHONY : csv_util/csv_util.cpp.i
+
+csv_util/csv_util.s: csv_util/csv_util.cpp.s
+.PHONY : csv_util/csv_util.s
+
+# target to generate assembly for a file
+csv_util/csv_util.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/csv_util/csv_util.cpp.s
+.PHONY : csv_util/csv_util.cpp.s
+
+image_match/image_match.o: image_match/image_match.cpp.o
+.PHONY : image_match/image_match.o
+
+# target to build an object file
+image_match/image_match.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/image_match/image_match.cpp.o
+.PHONY : image_match/image_match.cpp.o
+
+image_match/image_match.i: image_match/image_match.cpp.i
+.PHONY : image_match/image_match.i
+
+# target to preprocess a source file
+image_match/image_match.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/image_match/image_match.cpp.i
+.PHONY : image_match/image_match.cpp.i
+
+image_match/image_match.s: image_match/image_match.cpp.s
+.PHONY : image_match/image_match.s
+
+# target to generate assembly for a file
+image_match/image_match.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/image_match/image_match.cpp.s
+.PHONY : image_match/image_match.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -162,6 +234,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... compute_feature/compute_feature.o"
+	@echo "... compute_feature/compute_feature.i"
+	@echo "... compute_feature/compute_feature.s"
+	@echo "... csv_util/csv_util.o"
+	@echo "... csv_util/csv_util.i"
+	@echo "... csv_util/csv_util.s"
+	@echo "... image_match/image_match.o"
+	@echo "... image_match/image_match.i"
+	@echo "... image_match/image_match.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
