@@ -4,13 +4,11 @@
   CS 5330
 */
 
-// user passes in the directory as an argument
-
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <dirent.h>
-#include <csv_util/csv_util.h>;
+#include <../csv_util/csv_util.h>
 #include <vector>
 #include "opencv2/opencv.hpp"
 
@@ -64,7 +62,7 @@ int feature7x7(vector<Vec3b> &img, vector<float> &features)
 int createFeatureCSVFiles(const char *dirname)
 {
   // declare feature CSV file names
-  char *feature7x7CSV = "features/feature7x7.csv";
+  char *feature7x7CSV = "../features/feature7x7.csv";
 
   char buffer[256];
   FILE *fp;

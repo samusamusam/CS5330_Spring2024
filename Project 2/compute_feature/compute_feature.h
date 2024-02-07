@@ -8,8 +8,6 @@
 #ifndef COMPUTE_FEATURE_H
 #define COMPUTE_FEATURE_H
 
-#include "opencv2/opencv.hpp"
-
 using namespace cv;
 using namespace std;
 
