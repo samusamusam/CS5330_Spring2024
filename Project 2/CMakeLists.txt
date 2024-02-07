@@ -4,6 +4,6 @@ project(MyProject)
 # Find OpenCV
 find_package(OpenCV REQUIRED)
 
-# Executable for tutorial 1
-# add_executable(Tutorial1 Examples/Tutorial1.cpp)
-# target_link_libraries(Tutorial1 ${OpenCV_LIBS})
+# Executable for Image Matcher GUI
+add_executable(main main.cpp)
+target_link_libraries(main ${OpenCV_LIBS})
