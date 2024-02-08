@@ -3,6 +3,7 @@
   Spring 2024
   CS 5330
 
+  Header file for compute_feature.cpp
  */
 
 #ifndef COMPUTE_FEATURE_H
@@ -16,7 +17,7 @@ using namespace cv;
 using namespace std;
 
 int feature7x7(const Mat &img, vector<float> &features);
-
+int histFeature(const Mat &img, vector<float> &features);
 int createFeatureCSVFiles(char *dirname);
 
 #endif

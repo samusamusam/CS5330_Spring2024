@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     bool isValidInput = false;
     cout << "Choose from the following options for image matching." << endl;
     cout << "1. Baseline Matching" << endl;
-    cout << "2. " << endl;
+    cout << "2. Histogram Matching" << endl;
     cout << "3. " << endl;
     cout << "4. " << endl;
     cout << "5. " << endl;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     case 1: // Baseline Matching 7x7 middle filter
         features7x7Matching(targetImg, targetImgPath, numMatches, matches);
         break;
-    case 2:
+    case 2: // Histogram Matching
 
         break;
     case 3:
