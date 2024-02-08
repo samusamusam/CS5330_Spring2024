@@ -16,8 +16,8 @@
 using namespace cv;
 using namespace std;
 
-int feature7x7(const Mat &img, vector<float> &features);
-int histFeature(const Mat &img, vector<float> &features);
+int feature7x7(Mat &img, vector<float> &features);
+int featureHist(Mat &img, vector<float> &features);
 int createFeatureCSVFiles(char *dirname);
 
 #endif

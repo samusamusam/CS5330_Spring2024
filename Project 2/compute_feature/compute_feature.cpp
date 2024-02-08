@@ -23,7 +23,7 @@ using namespace cv;
  * img - the image to get the features for
  * features - the features of the vector to be stored
  */
-int feature7x7(const Mat &img, vector<float> &features)
+int feature7x7(Mat &img, vector<float> &features)
 {
   features.clear(); // empty features vector
 
@@ -58,10 +58,10 @@ int feature7x7(const Mat &img, vector<float> &features)
  * img - the image to get the features for
  * features - the features of the vector to be stored
  */
-int histFeature(const Mat &img, vector<float> &features)
+int featureHist(Mat &img, vector<float> &features)
 {
   features.clear(); // empty features vector
-  
+  Mat hist; // initialize histogram
   int histsize = 16; // bin size
 
   hist = Mat::zeros( Size( histsize, histsize ), CV_32FC1 ); // 2-D histogram 
@@ -183,7 +183,7 @@ int createFeatureCSVFiles(char *dirname)
       append_image_data_csv(feature7x7CSV, buffer, feature7x7vector, 0);
 
       // calculate the histogram feature and append it to the csv file
-      histFeature(currentImg, histFeatureVector);
+      featureHist(currentImg, histFeatureVector);
       append_image_data_csv(featureHistCSV, buffer, histFeatureVector, 0);
     }
   }

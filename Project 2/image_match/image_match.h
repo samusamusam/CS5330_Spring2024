@@ -16,6 +16,6 @@
 using namespace cv;
 using namespace std;
 
-int features7x7Matching(const Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
-int featuresHistMatching(const Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
+int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
+int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
 #endif
