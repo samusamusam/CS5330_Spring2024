@@ -98,7 +98,7 @@ int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vect
   {
     vector<float> singleImgFeatureData = imgFeatureData[i];
     // when the two histograms are of different size
-    if(imgFeatureData.size() != targetImgFeatureData.size()) {
+    if(imgFeatureData[i].size() != targetImgFeatureData.size()) {
       cout << "The histogram for image " + string(imgFileNames[i]) + " is a different size compared to the target histogram." << endl;
       continue;
     }
