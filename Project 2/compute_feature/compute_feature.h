@@ -18,6 +18,8 @@ using namespace std;
 
 int feature7x7(Mat &img, vector<float> &features);
 int featureHist(Mat &img, vector<float> &features);
+int featureMultiHist(Mat &img, vector<float> &features);
+int featureColorTextureHist(Mat &img, vector<float> &features);
 int createFeatureCSVFiles(char *dirname);
 
 #endif

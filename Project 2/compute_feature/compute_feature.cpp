@@ -60,23 +60,25 @@ int feature7x7(Mat &img, vector<float> &features)
  */
 int featureHist(Mat &img, vector<float> &features)
 {
-  features.clear(); // empty features vector
-  Mat hist; // initialize histogram
+  features.clear();  // empty features vector
+  Mat hist;          // initialize histogram
   int histsize = 16; // bin size
 
-  hist = Mat::zeros( Size( histsize, histsize ), CV_32FC1 ); // 2-D histogram 
+  hist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // 2-D histogram
 
   // loop through each pixel
-  for(int i = 0; i < img.rows; i++) {
+  for (int i = 0; i < img.rows; i++)
+  {
     Vec3b *ptr = img.ptr<Vec3b>(i); // point to row i
-    for(int j = 0; j < img.cols; j++) {
+    for (int j = 0; j < img.cols; j++)
+    {
       // get BGR values
       float B = ptr[j][0]; // blue
       float G = ptr[j][1]; // green
       float R = ptr[j][2]; // red
 
       // compute r,g chromaticity
-      float divisor = B+G+R;
+      float divisor = B + G + R;
       divisor = divisor > 0 ? divisor : 1.0; // if divisor = 0, assign 1.0 as default
 
       // normalize r and g based on divisor for weights of each relative to all channels
@@ -84,20 +86,22 @@ int featureHist(Mat &img, vector<float> &features)
       float g = G / divisor;
 
       // compute index
-      int rindex = (int)(r * (histsize-1) + 0.5);
-      int gindex = (int)(g * (histsize-1) + 0.5);
+      int rindex = (int)(r * (histsize - 1) + 0.5);
+      int gindex = (int)(g * (histsize - 1) + 0.5);
 
       // increment histogram at respective r and g index
-      hist.at<float>(rindex,gindex)++;
+      hist.at<float>(rindex, gindex)++;
     }
   }
-  
+
   hist /= (img.rows * img.cols); // normalizes all values of the histogram
 
   // loop through each value of the histogram and store the value in a vector
-  for(int i = 0; i < hist.rows; i++) {
-    float* ptr = hist.ptr<float>(i);
-    for(int j = 0; j < hist.cols; j++) {
+  for (int i = 0; i < hist.rows; i++)
+  {
+    float *ptr = hist.ptr<float>(i);
+    for (int j = 0; j < hist.cols; j++)
+    {
       features.push_back(ptr[j]);
     }
   }
@@ -105,13 +109,177 @@ int featureHist(Mat &img, vector<float> &features)
   return 0; // success
 }
 
+/**
+ * This function calculates 2D histogram features based on top and
+ * bottom halves and stores them in a vector of floats
+ * img - the image to get the features for
+ * features - the features of the vector to be stored
+ */
+int featureMultiHist(Mat &img, vector<float> &features)
+{
+  features.clear();  // empty features vector
+  int histsize = 16; // bin size
+
+  Mat topHalfHist = Mat::zeros(Size(histsize, histsize), CV_32FC1);    // top half histogram
+  Mat bottomHalfHist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // bottom half histogram
+
+  // loop through each pixel
+  for (int i = 0; i < img.rows; i++)
+  {
+    Vec3b *ptr = img.ptr<Vec3b>(i); // point to row i
+    for (int j = 0; j < img.cols; j++)
+    {
+      // get BGR values
+      float B = ptr[j][0]; // blue
+      float G = ptr[j][1]; // green
+      float R = ptr[j][2]; // red
+
+      // compute r,g chromaticity
+      float divisor = B + G + R;
+      divisor = divisor > 0 ? divisor : 1.0; // if divisor = 0, assign 1.0 as default
+
+      // normalize r and g based on divisor for weights of each relative to all channels
+      float r = R / divisor;
+      float g = G / divisor;
+
+      // compute index
+      int rindex = (int)(r * (histsize - 1) + 0.5);
+      int gindex = (int)(g * (histsize - 1) + 0.5);
+
+      // increment histogram at respective r and g index based on top/bottom half
+      if (i < img.rows / 2)
+      { // top half
+        topHalfHist.at<float>(rindex, gindex)++;
+      }
+      else
+      {
+        bottomHalfHist.at<float>(rindex, gindex)++;
+      }
+    }
+  }
+
+  topHalfHist /= (img.rows / 2 * img.cols);    // normalizes all values of the top half histogram
+  bottomHalfHist /= (img.rows / 2 * img.cols); // normalizes all values of the bottom half histogram
+
+  // loop through each value of the histogram and store the value in a vector
+  for (int i = 0; i < topHalfHist.rows; i++)
+  {
+    float *ptr = topHalfHist.ptr<float>(i);
+    for (int j = 0; j < topHalfHist.cols; j++)
+    {
+      features.push_back(ptr[j]);
+    }
+  }
+
+  for (int i = 0; i < bottomHalfHist.rows; i++)
+  {
+    float *ptr = bottomHalfHist.ptr<float>(i);
+    for (int j = 0; j < bottomHalfHist.cols; j++)
+    {
+      features.push_back(ptr[j]);
+    }
+  }
+  return 0; // success
+}
+
+/**
+ * This function calculates the feature vector via a color histogram and a texture histogram
+ * img - the image to get the features for
+ * features - the features of the vector to be stored
+ */
+int featureColorTextureHist(Mat &img, vector<float> &features)
+{
+  features.clear();  // empty features vector
+  int histsize = 16; // bin size
+  Mat greyscaleImg;  // greyscale image
+  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
+
+  Mat colorHist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // color histogram
+  Mat gradientHist = Mat::zeros(1, histsize, CV_32F);             // gradient histogram
+
+  // sobel X and sobel Y for gradient calculation
+  Mat sobelX, sobelY;
+  Sobel(greyscaleImg, sobelX, CV_32F, 1, 0);
+  Sobel(greyscaleImg, sobelY, CV_32F, 0, 1);
+
+  // loop through the sobel image by pixel
+  for (int x = 0; x < sobelX.rows; x++)
+  {
+    for (int y = 0; y < sobelX.cols; y++)
+    {
+      // store x and y gradients
+      float gradientX = sobelX.at<float>(x, y);
+      float gradientY = sobelY.at<float>(x, y);
+
+      // compute magnitude
+      float magnitude = sqrt(gradientX * gradientX + gradientY * gradientY);
+
+      // map the gradient magnitude to bins
+      int bin = static_cast<int>(histsize-1,histsize * magnitude / 256.0);
+
+      // increment corresponding bin in the histogram
+      gradientHist.at<float>(0, bin)++;
+    }
+  }
+
+  normalize(gradientHist, gradientHist, 1.0, 0.0, NORM_L1); // normalize the gradient histogram
+
+  // store each value in the gradient histogram in the features vector
+  for (int i = 0; i < gradientHist.cols; i++)
+  {
+    features.push_back(gradientHist.at<float>(0, i));
+  }
+
+  // loop through each pixel
+  for (int i = 0; i < img.rows; i++)
+  {
+    Vec3b *ptr = img.ptr<Vec3b>(i); // point to row i
+    for (int j = 0; j < img.cols; j++)
+    {
+      // get BGR values
+      float B = ptr[j][0]; // blue
+      float G = ptr[j][1]; // green
+      float R = ptr[j][2]; // red
+
+      // compute r,g chromaticity
+      float divisor = B + G + R;
+      divisor = divisor > 0 ? divisor : 1.0; // if divisor = 0, assign 1.0 as default
+
+      // normalize r and g based on divisor for weights of each relative to all channels
+      float r = R / divisor;
+      float g = G / divisor;
+
+      // compute index
+      int rindex = (int)(r * (histsize - 1) + 0.5);
+      int gindex = (int)(g * (histsize - 1) + 0.5);
+
+      // increment histogram at respective r and g index
+      colorHist.at<float>(rindex, gindex)++;
+    }
+  }
+
+  colorHist /= (img.rows * img.cols); // normalizes all values of the histogram
+
+  // loop through each value of the histogram and store the value in a vector
+  for (int i = 0; i < colorHist.rows; i++)
+  {
+    float *ptr = colorHist.ptr<float>(i);
+    for (int j = 0; j < colorHist.cols; j++)
+    {
+      features.push_back(ptr[j]);
+    }
+  }
+  return 0; // success
+}
 
 /**
  * This function creates the feature csv files given the directory of images.
  * The following csv files are created:
  *  1. feature7x7.csv
  *  2. featureHist.csv
- *  3. 
+ *  3. featureMultiHist.csv
+ *  4. featureColorTexture.csv
+ *  5. 
  * dirname - the name of the directory
  */
 int createFeatureCSVFiles(char *dirname)
@@ -119,15 +287,19 @@ int createFeatureCSVFiles(char *dirname)
   // declare feature CSV file names
   char feature7x7CSV[] = "../features/feature7x7.csv";
   char featureHistCSV[] = "../features/featureHist.csv";
+  char featureMultiHistCSV[] = "../features/featureMultiHist.csv";
+  char featureColorTextureHistCSV[] = "../features/featureColorTextureHist.csv";
 
   // delete the csv files if they exist
-  if (remove(feature7x7CSV) != 0 || remove(featureHistCSV))
+  if (remove(feature7x7CSV) != 0 && remove(featureHistCSV) != 0 && remove(featureMultiHistCSV) != 0 && remove(featureColorTextureHistCSV) != 0)
   {
     std::cerr << "Error: Failed to delete file: " << feature7x7CSV << endl;
   }
 
   cout << "File " << feature7x7CSV << " has been deleted." << endl;
   cout << "File " << featureHistCSV << " has been deleted." << endl;
+  cout << "File " << featureMultiHistCSV << " has been deleted." << endl;
+  cout << "File " << featureColorTextureHistCSV << " has been deleted." << endl;
 
   // declare variables for reading the image files
   char buffer[256];
@@ -166,6 +338,8 @@ int createFeatureCSVFiles(char *dirname)
       // vectors for features
       vector<float> feature7x7vector;
       vector<float> histFeatureVector;
+      vector<float> multiHistFeatureVector;
+      vector<float> colorTextureHistFeatureVector;
 
       // build the overall filename
       strcpy(buffer, dirname);
@@ -185,12 +359,20 @@ int createFeatureCSVFiles(char *dirname)
       // calculate the histogram feature and append it to the csv file
       featureHist(currentImg, histFeatureVector);
       append_image_data_csv(featureHistCSV, buffer, histFeatureVector, 0);
+
+      // calculate the multi histogram feature and append it to the csv file
+      featureMultiHist(currentImg, multiHistFeatureVector);
+      append_image_data_csv(featureMultiHistCSV, buffer, multiHistFeatureVector, 0);
+
+      // calculate the color texture histogram feature and append it to the csv file
+      featureColorTextureHist(currentImg, colorTextureHistFeatureVector);
+      // append_image_data_csv(featureColorTextureHistCSV, buffer, colorTextureHistFeatureVector, 0);
     }
   }
-  if (!csvCreated)
-  {
-    return -2;
-  }
-
+    if (!csvCreated)
+    {
+      return -2;
+    }
+  
   return 0;
 }
