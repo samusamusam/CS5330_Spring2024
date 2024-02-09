@@ -16,9 +16,9 @@
 using namespace cv;
 using namespace std;
 
-int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
-int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
-int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
-int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches);
-int featuresDenMatching(Mat &img, string &targetImageName, int numMatches, vector<string> &matches);
+int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
+int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
+int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
+int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
+int featuresDenMatching(Mat &img, string &targetImageName, int numMatches, vector<string> &matches, char* csvFilePath);
 #endif

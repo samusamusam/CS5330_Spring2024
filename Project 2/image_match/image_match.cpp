@@ -25,12 +25,11 @@ using namespace cv;
  * targetImagePath - path of the target image
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
+ * csvFilePath - file path where the corresponding CSV is located
  */
-int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches)
+int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath)
 {
-  char *csvFilePath = "../features/feature7x7.csv"; // name of csv file
   matches.clear(); // clear matches
-  // index for both imgFileNames and imgFeatureData will be the same
   vector<char *> imgFileNames; // image file names
   vector<vector<float>> imgFeatureData; // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0); // read the csv file of the features
@@ -52,7 +51,6 @@ int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vecto
     // push the singleSSD to the PQ and pop the greatest value if the size of the PQ exceeds numMatches
     if (!(singleSSD == 0.0 && imgFileNames[i] == targetImagePath))
     {
-
       smallestSSD.push({singleSSD, i});
       if (smallestSSD.size() > numMatches)
       {
@@ -78,12 +76,11 @@ int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vecto
  * targetImagePath - path of the target image
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
+ * csvFilePath - file path where the corresponding CSV is located
  */
-int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches)
+int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath)
 {
-  char *csvFilePath = "../features/featureHist.csv"; // name of csv file
   matches.clear(); // clear matches
-  // index for both imgFileNames and imgFeatureData will be the same
   vector<char *> imgFileNames; // image file names
   vector<vector<float>> imgFeatureData; // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0); // read the csv file of the features
@@ -137,12 +134,11 @@ int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vect
  * targetImagePath - path of the target image
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
+ * csvFilePath - file path where the corresponding CSV is located
  */
-int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches)
+int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath)
 {
-  char *csvFilePath = "../features/featureMultiHist.csv"; // name of csv file
   matches.clear(); // clear matches
-  // index for both imgFileNames and imgFeatureData will be the same
   vector<char *> imgFileNames; // image file names
   vector<vector<float>> imgFeatureData; // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0); // read the csv file of the features
@@ -196,12 +192,11 @@ int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches,
  * targetImagePath - path of the target image
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
+ * csvFilePath - file path where the corresponding CSV is located
  */
-int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches)
+int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath)
 {
-  char *csvFilePath = "../features/featureColorTexture.csv"; // name of csv file
   matches.clear(); // clear matches
-  // index for both imgFileNames and imgFeatureData will be the same
   vector<char *> imgFileNames; // image file names
   vector<vector<float>> imgFeatureData; // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0); // read the csv file of the features
@@ -249,12 +244,11 @@ int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatch
  * targetImageName - name of the target image
  * numMatches - number of matches to return
  * matches - stores the top matches found as file paths to the images
+ * csvFilePath - file path where the corresponding CSV is located
  */
-int featuresDenMatching(Mat &img, string &targetImageName, int numMatches, vector<string> &matches)
+int featuresDenMatching(Mat &img, string &targetImageName, int numMatches, vector<string> &matches, char* csvFilePath)
 {
-  char *csvFilePath = "../features/ResNet18_olym.csv"; // name of csv file
   matches.clear(); // clear matches
-  // index for both imgFileNames and imgFeatureData will be the same
   vector<char *> imgFileNames; // image file names
   vector<vector<float>> imgFeatureData; // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0); // read the csv file of the features

@@ -148,12 +148,12 @@ int featureMultiHist(Mat &img, vector<float> &features)
 
       // increment histogram at respective r and g index based on top/bottom half
       if (i < img.rows / 2)
-      { // top half
-        topHalfHist.at<float>(rindex, gindex)++;
+      {
+        topHalfHist.at<float>(rindex, gindex)++; // top half
       }
       else
       {
-        bottomHalfHist.at<float>(rindex, gindex)++;
+        bottomHalfHist.at<float>(rindex, gindex)++; // bottom half
       }
     }
   }
@@ -189,9 +189,9 @@ int featureMultiHist(Mat &img, vector<float> &features)
  */
 int featureColorTextureHist(Mat &img, vector<float> &features)
 {
-  features.clear();  // empty features vector
-  int histsize = 16; // bin size
-  Mat greyscaleImg;  // greyscale image
+  features.clear();                            // empty features vector
+  int histsize = 16;                           // bin size
+  Mat greyscaleImg;                            // greyscale image
   cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
 
   Mat colorHist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // color histogram
@@ -215,7 +215,7 @@ int featureColorTextureHist(Mat &img, vector<float> &features)
       float magnitude = sqrt(gradientX * gradientX + gradientY * gradientY);
 
       // map the gradient magnitude to bins
-      int bin = static_cast<int>(histsize-1,histsize * magnitude / 256.0);
+      int bin = static_cast<int>(histsize - 1, histsize * magnitude / 256.0);
 
       // increment corresponding bin in the histogram
       gradientHist.at<float>(0, bin)++;
@@ -274,23 +274,13 @@ int featureColorTextureHist(Mat &img, vector<float> &features)
 
 /**
  * This function creates the feature csv files given the directory of images.
- * The following csv files are created:
- *  1. feature7x7.csv
- *  2. featureHist.csv
- *  3. featureMultiHist.csv
- *  4. featureColorTexture.csv
- *  5. 
  * dirname - the name of the directory
+ * all other arguments - feature CSV file path
  */
-int createFeatureCSVFiles(char *dirname)
+int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistCSV,
+                          char *featureMultiHistCSV, char *featureColorTextureHistCSV)
 {
-  // declare feature CSV file names
-  char feature7x7CSV[] = "../features/feature7x7.csv";
-  char featureHistCSV[] = "../features/featureHist.csv";
-  char featureMultiHistCSV[] = "../features/featureMultiHist.csv";
-  char featureColorTextureHistCSV[] = "../features/featureColorTextureHist.csv";
-
-  // delete the csv files if they exist
+  // delete the csv files
   if (remove(feature7x7CSV) != 0 && remove(featureHistCSV) != 0 && remove(featureMultiHistCSV) != 0 && remove(featureColorTextureHistCSV) != 0)
   {
     std::cerr << "Error: Failed to delete file: " << feature7x7CSV << endl;
@@ -332,7 +322,6 @@ int createFeatureCSVFiles(char *dirname)
         strstr(dp->d_name, ".ppm") ||
         strstr(dp->d_name, ".tif"))
     {
-      csvCreated = true;
       printf("processing image file: %s\n", dp->d_name);
 
       // vectors for features
@@ -367,12 +356,15 @@ int createFeatureCSVFiles(char *dirname)
       // calculate the color texture histogram feature and append it to the csv file
       featureColorTextureHist(currentImg, colorTextureHistFeatureVector);
       // append_image_data_csv(featureColorTextureHistCSV, buffer, colorTextureHistFeatureVector, 0);
+
+      // created CSV
+      csvCreated = true;
     }
   }
-    if (!csvCreated)
-    {
-      return -2;
-    }
-  
+  if (!csvCreated) // failed to create CSV
+  {
+    return -2;
+  }
+
   return 0;
 }
