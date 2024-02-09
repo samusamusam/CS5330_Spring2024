@@ -18,11 +18,11 @@ using namespace cv;
 int main(int argc, char *argv[])
 {
     // declare feature CSV file names
-    const char FEATURE_7X7_CSV[] = "../features/feature7x7.csv";
-    const char FEATURE_HIST_CSV[] = "../features/featureHist.csv";
-    const char FEATURE_MULTI_HIST_CSV[] = "../features/featureMultiHist.csv";
-    const char FEATURE_COLOR_TEXTURE_HIST_CSV[] = "../features/featureColorTextureHist.csv";
-    const char FEATURE_RESNET_CSV[] = "../features/ResNet18_olym.csv";
+    char FEATURE_7X7_CSV[] = "../features/feature7x7.csv";
+    char FEATURE_HIST_CSV[] = "../features/featureHist.csv";
+    char FEATURE_MULTI_HIST_CSV[] = "../features/featureMultiHist.csv";
+    char FEATURE_COLOR_TEXTURE_HIST_CSV[] = "../features/featureColorTextureHist.csv";
+    char FEATURE_RESNET_CSV[] = "../features/ResNet18_olym.csv";
 
     // intro to program
     cout << "Welcome to the image matching program." << endl;
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     {
         // have user select directory of images
         cout << "To get started, please first define the directory that your images are located in." << endl;
+        cout << "Type 'q' to quit." << endl;
         cin.getline(directory_path, 256);
         // exit program if input is 'q'
         if (string(directory_path) == "q")
@@ -78,6 +79,7 @@ int main(int argc, char *argv[])
         do
         {
             cout << "Choose the target image in the directory: " + string(directory_path) + "." << endl;
+            cout << "Type 'q' to quit." << endl;
             getline(cin, targetImgName);
             // exit program if input is 'q'
             if (targetImgName == "q")
@@ -97,125 +99,134 @@ int main(int argc, char *argv[])
                 cerr << "Error: Unable to load the image. Please make sure you put in the correct path." << endl;
             }
         } while (!targetImg.data);
-
-        // options for image matching
-        int option = 0;
-        string input;
-        bool isValidInput = false;
-        cout << "Choose from the following options for image matching." << endl;
-        cout << "1. Baseline Matching" << endl;
-        cout << "2. Histogram Matching" << endl;
-        cout << "3. Multi-Histogram Matching" << endl;
-        cout << "4. Texture/Color Matching" << endl;
-        cout << "5. Deep Network Embeddings" << endl;
-        cout << "Type 'q' to quit." << endl;
+        for (;;)
+        {
+            // options for image matching
+            int option = 0;
+            string input;
+            bool isValidInput = false;
+            cout << "Choose from the following options for image matching." << endl;
+            cout << "1. Baseline Matching" << endl;
+            cout << "2. Histogram Matching" << endl;
+            cout << "3. Multi-Histogram Matching" << endl;
+            cout << "4. Texture/Color Matching" << endl;
+            cout << "5. Deep Network Embeddings" << endl;
+            cout << "Type 'b' to enter in a new target image." << endl;
+            cout << "Type 'q' to quit." << endl;)
 
         // get user input on matching type
         do
-        {
-            cout << "Enter your choice: ";
-            getline(cin, input);
-            // exit program if input is 'q'
-            if (input == "q")
             {
-                return -1;
+                cout << "Enter your choice: ";
+                getline(cin, input);
+                // exit program if input is 'q'
+                if (input == "q")
+                {
+                    return -1;
+                }
+                // exit for loop to enter a new image if input is 'b'
+                if (input == "b")
+                {
+                    break;
+                }
+                // try to convert string to integer
+                stringstream(input) >> option;
+
+                // if input can be converted to an integer and the option inputted is between 1 and 10
+                if (stringstream(input) >> option && option >= 1 && option <= 10)
+                {
+                    isValidInput = true;
+                }
+                else
+                {
+                    cout << "Invalid input. Please enter a number between 1-10." << endl;
+                }
+            }
+            while (!isValidInput)
+                ;
+
+            // reset input variables
+            input = "";
+            int numMatches = 0;
+            isValidInput = false;
+
+            // get number of matches user input
+            do
+            {
+                cout << "How many matches do you want (between 3 and 5): ";
+                cout << "Type 'q' to quit." << endl;
+                getline(cin, input);
+                // exit program if input is 'q'
+                if (input == "q")
+                {
+                    return -1;
+                }
+
+                // try to convert string to integer
+                stringstream(input) >> numMatches;
+
+                // if input can be converted to an integer and the option inputted is between 3 and 5
+                if (stringstream(input) >> numMatches && numMatches >= 3 && numMatches <= 5)
+                {
+                    isValidInput = true;
+                }
+                else
+                {
+                    cout << "Invalid number of matches. Please enter a number between 3-5." << endl;
+                }
+            } while (!isValidInput);
+
+            // switch cases based on user input
+            switch (option)
+            {
+            case 1: // Baseline Matching 7x7 middle filter
+                features7x7Matching(targetImg, targetImgPath, numMatches, matches, FEATURE_7X7_CSV);
+                break;
+            case 2: // Histogram Matching
+                featuresHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_HIST_CSV);
+                break;
+            case 3: // Multi-Histogram Matching
+                featuresMultiHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_MULTI_HIST_CSV);
+                break;
+            case 4: // Texture-Color Matching
+                featuresColorTextureMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_COLOR_TEXTURE_HIST_CSV);
+                break;
+            case 5: // Deep Network Embeddings
+                featuresDenMatching(targetImg, targetImgName, numMatches, matches, FEATURE_RESNET_CSV);
+                break;
             }
 
-            // try to convert string to integer
-            stringstream(input) >> option;
-
-            // if input can be converted to an integer and the option inputted is between 1 and 10
-            if (stringstream(input) >> option && option >= 1 && option <= 10)
+            // if no matches found
+            if (matches.size() < 0)
             {
-                isValidInput = true;
-            }
-            else
-            {
-                cout << "Invalid input. Please enter a number between 1-10." << endl;
-            }
-        } while (!isValidInput);
-
-        // reset input variables
-        input = "";
-        int numMatches = 0;
-        isValidInput = false;
-
-        // get number of matches user input
-        do
-        {
-            cout << "How many matches do you want (between 3 and 5): ";
-            getline(cin, input);
-            // exit program if input is 'q'
-            if (input == "q")
-            {
-                return -1;
+                cerr << "No matches found. Please try again." << endl;
+                continue;
             }
 
-            // try to convert string to integer
-            stringstream(input) >> numMatches;
+            // // show target image
+            // cout << "Showing target image." << endl;
+            // namedWindow("Target - " + targetImgPath, WINDOW_NORMAL);
+            // imshow("Target - " + targetImgPath, targetImg);
 
-            // if input can be converted to an integer and the option inputted is between 3 and 5
-            if (stringstream(input) >> numMatches && numMatches >= 3 && numMatches <= 5)
-            {
-                isValidInput = true;
-            }
-            else
-            {
-                cout << "Invalid number of matches. Please enter a number between 3-5." << endl;
-            }
-        } while (!isValidInput);
-
-        // switch cases based on user input
-        switch (option)
-        {
-        case 1: // Baseline Matching 7x7 middle filter
-            features7x7Matching(targetImg, targetImgPath, numMatches, matches, FEATURE_7X7_CSV);
-            break;
-        case 2: // Histogram Matching
-            featuresHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_HIST_CSV);
-            break;
-        case 3: // Multi-Histogram Matching
-            featuresMultiHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_MULTI_HIST_CSV);
-            break;
-        case 4: // Texture-Color Matching
-            featuresColorTextureMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_COLOR_TEXTURE_HIST_CSV);
-            break;
-        case 5: // Deep Network Embeddings
-            featuresDenMatching(targetImg, targetImgName, numMatches, matches, FEATURE_RESNET_CSV);
-            break;
+            // // show all matched images
+            // cout << "Showing all image matches." << endl;
+            // Mat matchedImg;
+            // for (int i = 0; i < matches.size(); i++)
+            // {
+            //     matchedImg = imread(matches[i]);
+            //     if (!matchedImg.empty())
+            //     { // Check if the image was loaded successfully
+            //         namedWindow("Matched Image " + to_string(i + 1) + " - " + matches[i], WINDOW_NORMAL);
+            //         imshow("Matched Image " + to_string(i + 1) + " - " + matches[i], matchedImg);
+            //     }
+            //     else
+            //     {
+            //         cerr << "Error: Unable to load matched image at path: " << matches[i] << endl;
+            //     }
+            // }
+            waitKey(-1);         // wait for keypress
+            destroyAllWindows(); // destroy all windows // TODO: fix this
         }
-
-        // if no matches found
-        if (matches.size() < 0)
-        {
-            cerr << "No matches found. Please try again." << endl;
-            continue;
-        }
-
-        // show target image
-        cout << "Showing target image." << endl;
-        namedWindow("Target - " + targetImgPath, WINDOW_NORMAL);
-        imshow("Target - " + targetImgPath, targetImg);
-
-        // show all matched images
-        cout << "Showing all image matches." << endl;
-        Mat matchedImg;
-        for (int i = 0; i < matches.size(); i++)
-        {
-            matchedImg = imread(matches[i]);
-            if (!matchedImg.empty())
-            { // Check if the image was loaded successfully
-                namedWindow("Matched Image " + to_string(i + 1) + " - " + matches[i], WINDOW_NORMAL);
-                imshow("Matched Image " + to_string(i + 1) + " - " + matches[i], matchedImg);
-            }
-            else
-            {
-                cerr << "Error: Unable to load matched image at path: " << matches[i] << endl;
-            }
-        }
-        waitKey(-1); // wait for keypress
-        destroyAllWindows(); // destroy all windows // TODO: fix this
     }
-
     return (0);
 }

@@ -218,11 +218,12 @@ int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatch
     // push the singleSSD to the PQ and pop the greatest value if the size of the PQ exceeds numMatches
     if (!(singleSSD == 0.0 && imgFileNames[i] == targetImagePath))
     {
-
+      cout << imgFileNames[i] << endl;
+      cout << targetImagePath << endl;
       smallestSSD.push({singleSSD, i});
       if (smallestSSD.size() > numMatches)
       {
-        smallestSSD.pop();
+        smallestSSD.pop();  
       }
     }
   }

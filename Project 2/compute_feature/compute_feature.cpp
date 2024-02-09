@@ -215,7 +215,7 @@ int featureColorTextureHist(Mat &img, vector<float> &features)
       float magnitude = sqrt(gradientX * gradientX + gradientY * gradientY);
 
       // map the gradient magnitude to bins
-      int bin = static_cast<int>(histsize - 1, histsize * magnitude / 256.0);
+      int bin = static_cast<int>(MIN(histsize - 1, histsize * magnitude / 256.0));
 
       // increment corresponding bin in the histogram
       gradientHist.at<float>(0, bin)++;
@@ -281,9 +281,21 @@ int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistC
                           char *featureMultiHistCSV, char *featureColorTextureHistCSV)
 {
   // delete the csv files
-  if (remove(feature7x7CSV) != 0 && remove(featureHistCSV) != 0 && remove(featureMultiHistCSV) != 0 && remove(featureColorTextureHistCSV) != 0)
+  if (remove(feature7x7CSV) != 0)
   {
-    std::cerr << "Error: Failed to delete file: " << feature7x7CSV << endl;
+    std::cerr << "Error: Failed to delete " << feature7x7CSV << " file." << endl;
+  }
+  if (remove(featureHistCSV) != 0)
+  {
+    std::cerr << "Error: Failed to delete " << featureHistCSV << " file." << endl;
+  }
+  if (remove(featureMultiHistCSV) != 0)
+  {
+    std::cerr << "Error: Failed to delete " << featureMultiHistCSV << " file." << endl;
+  }
+  if (remove(featureColorTextureHistCSV) != 0)
+  {
+    std::cerr << "Error: Failed to delete " << featureColorTextureHistCSV << " file." << endl;
   }
 
   cout << "File " << feature7x7CSV << " has been deleted." << endl;
@@ -355,7 +367,7 @@ int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistC
 
       // calculate the color texture histogram feature and append it to the csv file
       featureColorTextureHist(currentImg, colorTextureHistFeatureVector);
-      // append_image_data_csv(featureColorTextureHistCSV, buffer, colorTextureHistFeatureVector, 0);
+      append_image_data_csv(featureColorTextureHistCSV, buffer, colorTextureHistFeatureVector, 0);
 
       // created CSV
       csvCreated = true;
