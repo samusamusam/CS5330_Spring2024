@@ -20,7 +20,8 @@ int feature7x7(Mat &img, vector<float> &features);
 int featureHist(Mat &img, vector<float> &features);
 int featureMultiHist(Mat &img, vector<float> &features);
 int featureColorTextureHist(Mat &img, vector<float> &features);
+int featureColorTextureDNNHist(Mat &img, vector<float> &features, string imgName);
 int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistCSV,
-                          char *featureMultiHistCSV, char *featureColorTextureHistCSV);
-
+                          char *featureMultiHistCSV, char *featureColorTextureHistCSV, char* featureColorTextureDNNHist);
+                    
 #endif

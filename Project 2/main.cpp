@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     char FEATURE_MULTI_HIST_CSV[] = "../features/featureMultiHist.csv";
     char FEATURE_COLOR_TEXTURE_HIST_CSV[] = "../features/featureColorTextureHist.csv";
     char FEATURE_RESNET_CSV[] = "../features/ResNet18_olym.csv";
+    char FEATURE_COLOR_TEXTURE_DNN_HIST_CSV[] = "../features/featureColorTextureDNNHist.csv";
 
     // intro to program
     cout << "Welcome to the image matching program." << endl;
@@ -37,31 +38,52 @@ int main(int argc, char *argv[])
         // have user select directory of images
         cout << "To get started, please first define the directory that your images are located in." << endl;
         cout << "Type 'q' to quit." << endl;
+        cout << "     --------------------------------     " << endl;
         cin.getline(directory_path, 256);
+        cout << "     --------------------------------     " << endl;
         // exit program if input is 'q'
         if (string(directory_path) == "q")
         {
             return -1;
         }
         cout << "Directory path set to: " << directory_path << endl;
+        cout << "     --------------------------------     " << endl;
 
-        // create all feature csv files
-        cout << "Creating all feature csv files for the directory of images..." << endl;
-        createFeatureCSVFilesResponse = createFeatureCSVFiles(directory_path, FEATURE_7X7_CSV, FEATURE_HIST_CSV,
-                                                              FEATURE_MULTI_HIST_CSV, FEATURE_COLOR_TEXTURE_HIST_CSV);
-
-        if (createFeatureCSVFilesResponse == -1)
-        {
-            cout << "Directory could not be opened. Try entering a new directory." << endl;
+        // ask user for feature creation
+        string inputFeature;
+        cout << "Would you like to create the features? If the features are pre-loaded, you can skip this." << endl;
+        cout << "'y' for create features; anything else for pre-loaded features" << endl;
+        cout << "     --------------------------------     " << endl;
+        getline(cin, inputFeature);
+        cout << "     --------------------------------     " << endl;
+        if (inputFeature != "y") {
+            createFeatureCSVFilesResponse = 0;
         }
-        else if (createFeatureCSVFilesResponse == -2)
+        if (inputFeature == "y")
         {
-            cout << "No image files to process in the directory. Try entering a new directory." << endl;
+            // create all feature csv files
+            cout << "Creating all feature csv files for the directory of images..." << endl;
+            createFeatureCSVFilesResponse = createFeatureCSVFiles(directory_path, FEATURE_7X7_CSV, FEATURE_HIST_CSV,
+                                                                  FEATURE_MULTI_HIST_CSV, FEATURE_COLOR_TEXTURE_HIST_CSV,
+                                                                  FEATURE_COLOR_TEXTURE_DNN_HIST_CSV);
+            cout << "     --------------------------------     " << endl;
+
+            if (createFeatureCSVFilesResponse == -1)
+            {
+                cout << "Directory could not be opened. Try entering a new directory." << endl;
+                cout << "     --------------------------------     " << endl;
+            }
+            else if (createFeatureCSVFilesResponse == -2)
+            {
+                cout << "No image files to process in the directory. Try entering a new directory." << endl;
+                cout << "     --------------------------------     " << endl;
+            }
         }
     }
 
     // successfully created all CSV feature files
     cout << "Finished creating CSV files for all features." << endl;
+    cout << "     --------------------------------     " << endl;
 
     // initialize matches
     vector<string> matches;
@@ -80,7 +102,9 @@ int main(int argc, char *argv[])
         {
             cout << "Choose the target image in the directory: " + string(directory_path) + "." << endl;
             cout << "Type 'q' to quit." << endl;
+            cout << "     --------------------------------     " << endl;
             getline(cin, targetImgName);
+            cout << "     --------------------------------     " << endl;
             // exit program if input is 'q'
             if (targetImgName == "q")
             {
@@ -97,6 +121,7 @@ int main(int argc, char *argv[])
             if (!targetImg.data)
             {
                 cerr << "Error: Unable to load the image. Please make sure you put in the correct path." << endl;
+                cout << "     --------------------------------     " << endl;
             }
         } while (!targetImg.data);
         for (;;)
@@ -111,20 +136,24 @@ int main(int argc, char *argv[])
             cout << "3. Multi-Histogram Matching" << endl;
             cout << "4. Texture/Color Matching" << endl;
             cout << "5. Deep Network Embeddings" << endl;
+            cout << "6. Color/Tecture/DNN Matching" << endl;
             cout << "Type 'b' to enter in a new target image." << endl;
-            cout << "Type 'q' to quit." << endl;)
+            cout << "Type 'q' to quit." << endl;
+            cout << "     --------------------------------     " << endl;
 
-        // get user input on matching type
-        do
+            // get user input on matching type
+            do
             {
-                cout << "Enter your choice: ";
+                cout << "Enter your choice: " << endl;
+                cout << "     --------------------------------     " << endl;
                 getline(cin, input);
+                cout << "     --------------------------------     " << endl;
                 // exit program if input is 'q'
                 if (input == "q")
                 {
                     return -1;
                 }
-                // exit for loop to enter a new image if input is 'b'
+                // exit do while to enter a new image if input is 'b'
                 if (input == "b")
                 {
                     break;
@@ -139,11 +168,16 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    cout << "Invalid input. Please enter a number between 1-10." << endl;
+                    cout << "Invalid input. Try again." << endl;
+                    cout << "     --------------------------------     " << endl;
                 }
+            } while (!isValidInput);
+
+            // exit for loop to enter a new image if input is 'b'
+            if (input == "b")
+            {
+                break;
             }
-            while (!isValidInput)
-                ;
 
             // reset input variables
             input = "";
@@ -153,9 +187,11 @@ int main(int argc, char *argv[])
             // get number of matches user input
             do
             {
-                cout << "How many matches do you want (between 3 and 5): ";
+                cout << "How many matches do you want (between 3 and 5): " << endl;
                 cout << "Type 'q' to quit." << endl;
+                cout << "     --------------------------------     " << endl;
                 getline(cin, input);
+                cout << "     --------------------------------     " << endl;
                 // exit program if input is 'q'
                 if (input == "q")
                 {
@@ -173,59 +209,96 @@ int main(int argc, char *argv[])
                 else
                 {
                     cout << "Invalid number of matches. Please enter a number between 3-5." << endl;
+                    cout << "     --------------------------------     " << endl;
                 }
             } while (!isValidInput);
 
             // switch cases based on user input
+            vector<float> targetImgFeatureData;
+
             switch (option)
             {
             case 1: // Baseline Matching 7x7 middle filter
-                features7x7Matching(targetImg, targetImgPath, numMatches, matches, FEATURE_7X7_CSV);
+                feature7x7(targetImg, targetImgFeatureData);
+                features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_7X7_CSV, targetImgFeatureData, false);
                 break;
             case 2: // Histogram Matching
-                featuresHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_HIST_CSV);
+                featureHist(targetImg, targetImgFeatureData);
+                features_match_intersection(targetImg, targetImgName, numMatches, matches, FEATURE_HIST_CSV, targetImgFeatureData, false);
                 break;
             case 3: // Multi-Histogram Matching
-                featuresMultiHistMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_MULTI_HIST_CSV);
+                featureMultiHist(targetImg, targetImgFeatureData);
+                features_match_intersection(targetImg, targetImgName, numMatches, matches, FEATURE_MULTI_HIST_CSV, targetImgFeatureData, false);
                 break;
             case 4: // Texture-Color Matching
-                featuresColorTextureMatching(targetImg, targetImgPath, numMatches, matches, FEATURE_COLOR_TEXTURE_HIST_CSV);
+                featureColorTextureHist(targetImg, targetImgFeatureData);
+                features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_COLOR_TEXTURE_HIST_CSV, targetImgFeatureData, false);
                 break;
             case 5: // Deep Network Embeddings
-                featuresDenMatching(targetImg, targetImgName, numMatches, matches, FEATURE_RESNET_CSV);
+                features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_RESNET_CSV, targetImgFeatureData, true);
+                break;
+            case 6: // Texture-Color-DNN Matching
+                featureColorTextureDNNHist(targetImg, targetImgFeatureData, targetImgName);
+                features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_COLOR_TEXTURE_DNN_HIST_CSV, targetImgFeatureData, true);
                 break;
             }
+            cout << "     --------------------------------     " << endl;
 
             // if no matches found
             if (matches.size() < 0)
             {
                 cerr << "No matches found. Please try again." << endl;
+                cout << "     --------------------------------     " << endl;
                 continue;
             }
 
-            // // show target image
-            // cout << "Showing target image." << endl;
-            // namedWindow("Target - " + targetImgPath, WINDOW_NORMAL);
-            // imshow("Target - " + targetImgPath, targetImg);
+            // show target image
+            cout << "Showing target image." << endl;
+            namedWindow("Target - " + targetImgName, WINDOW_NORMAL);
+            imshow("Target - " + targetImgName, targetImg);
 
-            // // show all matched images
-            // cout << "Showing all image matches." << endl;
-            // Mat matchedImg;
-            // for (int i = 0; i < matches.size(); i++)
-            // {
-            //     matchedImg = imread(matches[i]);
-            //     if (!matchedImg.empty())
-            //     { // Check if the image was loaded successfully
-            //         namedWindow("Matched Image " + to_string(i + 1) + " - " + matches[i], WINDOW_NORMAL);
-            //         imshow("Matched Image " + to_string(i + 1) + " - " + matches[i], matchedImg);
-            //     }
-            //     else
-            //     {
-            //         cerr << "Error: Unable to load matched image at path: " << matches[i] << endl;
-            //     }
-            // }
-            waitKey(-1);         // wait for keypress
-            destroyAllWindows(); // destroy all windows // TODO: fix this
+            // show all matched images
+            cout << "Showing all image matches." << endl;
+            cout << "     --------------------------------     " << endl;
+            Mat matchedImg;
+            for (int i = 0; i < matches.size(); i++)
+            {
+                matchedImg = imread(string(directory_path) + "/" + matches[i]);
+                // Check if the image was loaded successfully
+                if (!matchedImg.empty())
+                {
+                    namedWindow("Matched Image " + to_string(i + 1) + " - " + matches[i], WINDOW_NORMAL);
+                    imshow("Matched Image " + to_string(i + 1) + " - " + matches[i], matchedImg);
+                }
+                else
+                {
+                    cerr << "Error: Unable to load matched image at path: " << matches[i] << endl;
+                }
+            }
+
+            // keeps windows open until key press
+            int keyPressed;
+
+            // ask user to continue or quit the program
+            cout << "Type 'c' if you would like to continue with the program." << endl;
+            cout << "Type 'q' if you would like to quit the program." << endl;
+            cout << "     --------------------------------     " << endl;
+            do
+            {
+                keyPressed = waitKey(0);
+                if (keyPressed == 'q')
+                {
+                    cout << "Thank you for using my Image Match program. See you again!" << endl;
+                    return -1;
+                }
+                if (keyPressed == 'c')
+                {
+                    destroyAllWindows();
+                    cout << "Type any key to confirm." << endl;
+                    waitKey(0);
+                }
+            } while (keyPressed != 'q' && keyPressed != 'c');
+            destroyAllWindows();
         }
     }
     return (0);

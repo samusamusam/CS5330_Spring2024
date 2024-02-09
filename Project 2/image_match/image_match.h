@@ -16,9 +16,8 @@
 using namespace cv;
 using namespace std;
 
-int features7x7Matching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
-int featuresHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
-int featuresMultiHistMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
-int featuresColorTextureMatching(Mat &img, string &targetImagePath, int numMatches, vector<string> &matches, char* csvFilePath);
-int featuresDenMatching(Mat &img, string &targetImageName, int numMatches, vector<string> &matches, char* csvFilePath);
+int features_match_SSD(Mat &img, string &targetImageName, int numMatches, vector<string> &matches, char *csvFilePath,
+                       vector<float> &targetImgFeatureData, bool predefined);
+int features_match_intersection(Mat &img, string &targetImageName, int numMatches, vector<string> &matches, char *csvFilePath,
+                                vector<float> &targetImgFeatureData, bool predefined);
 #endif
