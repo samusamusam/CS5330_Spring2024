@@ -2,6 +2,9 @@
  * Sam Lee
  * Spring 2024
  * CS5330
+ * 
+ * This program matches a target image with other images in the image directory.
+ * This is a command line program. Please read the instructions while running the program.
  */
 
 #include "opencv2/opencv.hpp"
