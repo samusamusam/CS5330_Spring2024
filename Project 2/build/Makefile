@@ -177,6 +177,30 @@ csv_util/csv_util.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/csv_util/csv_util.cpp.s
 .PHONY : csv_util/csv_util.cpp.s
 
+faceDetect/faceDetect.o: faceDetect/faceDetect.cpp.o
+.PHONY : faceDetect/faceDetect.o
+
+# target to build an object file
+faceDetect/faceDetect.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/faceDetect/faceDetect.cpp.o
+.PHONY : faceDetect/faceDetect.cpp.o
+
+faceDetect/faceDetect.i: faceDetect/faceDetect.cpp.i
+.PHONY : faceDetect/faceDetect.i
+
+# target to preprocess a source file
+faceDetect/faceDetect.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/faceDetect/faceDetect.cpp.i
+.PHONY : faceDetect/faceDetect.cpp.i
+
+faceDetect/faceDetect.s: faceDetect/faceDetect.cpp.s
+.PHONY : faceDetect/faceDetect.s
+
+# target to generate assembly for a file
+faceDetect/faceDetect.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/faceDetect/faceDetect.cpp.s
+.PHONY : faceDetect/faceDetect.cpp.s
+
 image_match/image_match.o: image_match/image_match.cpp.o
 .PHONY : image_match/image_match.o
 
@@ -240,6 +264,9 @@ help:
 	@echo "... csv_util/csv_util.o"
 	@echo "... csv_util/csv_util.i"
 	@echo "... csv_util/csv_util.s"
+	@echo "... faceDetect/faceDetect.o"
+	@echo "... faceDetect/faceDetect.i"
+	@echo "... faceDetect/faceDetect.s"
 	@echo "... image_match/image_match.o"
 	@echo "... image_match/image_match.i"
 	@echo "... image_match/image_match.s"
