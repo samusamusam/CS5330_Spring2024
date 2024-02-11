@@ -7,6 +7,7 @@
 #include "opencv2/opencv.hpp"
 #include "compute_feature/compute_feature.h"
 #include "image_match/image_match.h"
+#include "csv_util/csv_util.h"
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
     char FEATURE_COLOR_TEXTURE_HIST_CSV[] = "../features/featureColorTextureHist.csv";
     char FEATURE_RESNET_CSV[] = "../features/ResNet18_olym.csv";
     char FEATURE_COLOR_TEXTURE_DNN_HIST_CSV[] = "../features/featureColorTextureDNNHist.csv";
+    char FEATURE_FACE_CSV[] = "../features/featureFace.csv";
 
     // intro to program
     cout << "Welcome to the image matching program." << endl;
@@ -33,6 +35,10 @@ int main(int argc, char *argv[])
     int createFeatureCSVFilesResponse = 1;
     char directory_path[256];
 
+    // read pre-trained feature set
+    vector<char *> imgFileNames;
+    vector<vector<float>> imgFeatureData;
+    read_image_data_csv("../features/ResNet18_olym.csv", imgFileNames, imgFeatureData, 0); // retrieve file names and feature data from ResNet csv
     while (createFeatureCSVFilesResponse != 0)
     {
         // have user select directory of images
@@ -56,7 +62,8 @@ int main(int argc, char *argv[])
         cout << "     --------------------------------     " << endl;
         getline(cin, inputFeature);
         cout << "     --------------------------------     " << endl;
-        if (inputFeature != "y") {
+        if (inputFeature != "y")
+        {
             createFeatureCSVFilesResponse = 0;
         }
         if (inputFeature == "y")
@@ -65,7 +72,7 @@ int main(int argc, char *argv[])
             cout << "Creating all feature csv files for the directory of images..." << endl;
             createFeatureCSVFilesResponse = createFeatureCSVFiles(directory_path, FEATURE_7X7_CSV, FEATURE_HIST_CSV,
                                                                   FEATURE_MULTI_HIST_CSV, FEATURE_COLOR_TEXTURE_HIST_CSV,
-                                                                  FEATURE_COLOR_TEXTURE_DNN_HIST_CSV);
+                                                                  FEATURE_COLOR_TEXTURE_DNN_HIST_CSV, FEATURE_FACE_CSV, imgFileNames, imgFeatureData);
             cout << "     --------------------------------     " << endl;
 
             if (createFeatureCSVFilesResponse == -1)
@@ -100,6 +107,7 @@ int main(int argc, char *argv[])
         // ask user for target image in the set directory path
         do
         {
+            matches.clear();     // empty matches
             cout << "Choose the target image in the directory: " + string(directory_path) + "." << endl;
             cout << "Type 'q' to quit." << endl;
             cout << "     --------------------------------     " << endl;
@@ -127,6 +135,7 @@ int main(int argc, char *argv[])
         for (;;)
         {
             // options for image matching
+            matches.clear();     // empty matches
             int option = 0;
             string input;
             bool isValidInput = false;
@@ -136,7 +145,8 @@ int main(int argc, char *argv[])
             cout << "3. Multi-Histogram Matching" << endl;
             cout << "4. Texture/Color Matching" << endl;
             cout << "5. Deep Network Embeddings" << endl;
-            cout << "6. Color/Tecture/DNN Matching" << endl;
+            cout << "6. Color/Texture/DNN Matching" << endl;
+            cout << "7. Face Matching" << endl;
             cout << "Type 'b' to enter in a new target image." << endl;
             cout << "Type 'q' to quit." << endl;
             cout << "     --------------------------------     " << endl;
@@ -161,8 +171,8 @@ int main(int argc, char *argv[])
                 // try to convert string to integer
                 stringstream(input) >> option;
 
-                // if input can be converted to an integer and the option inputted is between 1 and 10
-                if (stringstream(input) >> option && option >= 1 && option <= 10)
+                // if input can be converted to an integer and the option inputted is between 1 and 7
+                if (stringstream(input) >> option && option >= 1 && option <= 7)
                 {
                     isValidInput = true;
                 }
@@ -187,7 +197,7 @@ int main(int argc, char *argv[])
             // get number of matches user input
             do
             {
-                cout << "How many matches do you want (between 3 and 5): " << endl;
+                cout << "How many matches do you want (between 1 and 5): " << endl;
                 cout << "Type 'q' to quit." << endl;
                 cout << "     --------------------------------     " << endl;
                 getline(cin, input);
@@ -202,7 +212,7 @@ int main(int argc, char *argv[])
                 stringstream(input) >> numMatches;
 
                 // if input can be converted to an integer and the option inputted is between 3 and 5
-                if (stringstream(input) >> numMatches && numMatches >= 3 && numMatches <= 5)
+                if (stringstream(input) >> numMatches && numMatches >= 1 && numMatches <= 5)
                 {
                     isValidInput = true;
                 }
@@ -238,14 +248,20 @@ int main(int argc, char *argv[])
                 features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_RESNET_CSV, targetImgFeatureData, true);
                 break;
             case 6: // Texture-Color-DNN Matching
-                featureColorTextureDNNHist(targetImg, targetImgFeatureData, targetImgName);
+                featureColorTextureDNNHist(targetImg, targetImgFeatureData, targetImgName, imgFileNames, imgFeatureData);
                 features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_COLOR_TEXTURE_DNN_HIST_CSV, targetImgFeatureData, true);
+                break;
+            case 7: // Face Matching
+                int response = featureFirstFace(targetImg, targetImgFeatureData);
+                if(response == 0) {
+                    features_match_SSD(targetImg, targetImgName, numMatches, matches, FEATURE_FACE_CSV, targetImgFeatureData, false);
+                }
                 break;
             }
             cout << "     --------------------------------     " << endl;
 
             // if no matches found
-            if (matches.size() < 0)
+            if (matches.size() <= 0)
             {
                 cerr << "No matches found. Please try again." << endl;
                 cout << "     --------------------------------     " << endl;

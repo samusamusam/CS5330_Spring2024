@@ -13,9 +13,23 @@
 #include <vector>
 #include "../csv_util/csv_util.h"
 #include "opencv2/opencv.hpp"
+#include "../faceDetect/faceDetect.h"
 
 using namespace std;
 using namespace cv;
+
+/**
+ * This function normalizes the feature vector by total bins size
+ * features - the feature vector to normalize
+ * totalBins - divisor for each feature vector float value
+ */
+void normalizeFeatures(vector<float> &features, int totalBins)
+{
+  for (int i = 0; i < features.size(); i++)
+  {
+    features[i] /= totalBins;
+  }
+}
 
 /**
  * This function generates the color feature of an image and updates
@@ -59,7 +73,7 @@ int colorHistFeature(Mat &img, int startrow, int startcol, int endrow, int endco
     }
   }
 
-  hist /= (histsize * histsize); // normalizes all values of the histogram
+  // hist /= (histsize * histsize); // normalizes all values of the histogram
 
   // loop through each value of the histogram and store the value in a vector
   for (int i = 0; i < hist.rows; i++)
@@ -77,16 +91,13 @@ int colorHistFeature(Mat &img, int startrow, int startcol, int endrow, int endco
 /**
  * This function generates the gradient feature of an image and updates
  * the features vector and the histogram matrix
- * img - the image to get the features for
+ * greyscaleImg - the image to get the features for
  * hist - the histogram that is updated
  * histsize- size of the histogram on each side
  * features - the features of the vector to be stored
  */
-int gradientHistFeature(Mat &img, Mat &hist, int histsize, vector<float> &features)
+int gradientHistFeature(Mat &greyscaleImg, Mat &hist, int histsize, vector<float> &features)
 {
-  Mat greyscaleImg;                            // greyscale image
-  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
-
   // sobel X and sobel Y for gradient calculation
   Mat sobelX, sobelY;
   Sobel(greyscaleImg, sobelX, CV_32F, 1, 0);
@@ -111,8 +122,6 @@ int gradientHistFeature(Mat &img, Mat &hist, int histsize, vector<float> &featur
       hist.at<float>(0, bin)++;
     }
   }
-
-  normalize(hist, hist, 1.0, 0.0, NORM_L1); // normalize the gradient histogram
 
   // store each value in the gradient histogram in the features vector
   for (int i = 0; i < hist.cols; i++)
@@ -171,7 +180,11 @@ int featureHist(Mat &img, vector<float> &features)
   Mat hist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // 2-D histogram
 
   colorHistFeature(img, 0, 0, img.rows, img.cols, hist, histsize, features); // update the features based on color histogram
-  return 0;                                                                  // success
+
+  // normalize features based on histsize
+  normalizeFeatures(features, histsize * histsize);
+
+  return 0; // success
 }
 
 /**
@@ -189,7 +202,9 @@ int featureMultiHist(Mat &img, vector<float> &features)
 
   colorHistFeature(img, 0, 0, int((img.rows / 2)) + 1, int(img.cols), topHalfHist, histsize, features);                   // get color histogram features for top half
   colorHistFeature(img, int((img.rows / 2)), 0, int((img.rows / 2)) + 1, int(img.cols), topHalfHist, histsize, features); // get color histogram features for bottom half
-  return 0;                                                                                                               // success
+  normalizeFeatures(features, histsize * histsize);
+
+  return 0; // success
 }
 
 /**
@@ -202,10 +217,23 @@ int featureColorTextureHist(Mat &img, vector<float> &features)
   features.clear();                                               // empty features vector
   int histsize = 16;                                              // bin size
   Mat colorHist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // color histogram
-  Mat gradientHist = Mat::zeros(1, histsize, CV_32F);             // gradient histogram
+  Mat gradientHist = Mat::zeros(1, histsize * histsize, CV_32F);             // gradient histogram
+  vector<float> colorFeatures;
+  vector<float> gradientFeatures;
 
-  gradientHistFeature(img, gradientHist, histsize, features);                     // get gradient histogram features
-  colorHistFeature(img, 0, 0, img.rows, img.cols, colorHist, histsize, features); // get color histogram features
+  colorHistFeature(img, 0, 0, img.rows, img.cols, colorHist, histsize, colorFeatures); // get color histogram features
+  normalizeFeatures(colorFeatures, histsize * histsize);
+
+  Mat greyscaleImg;                            // greyscale image
+  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
+
+  gradientHistFeature(greyscaleImg, gradientHist, histsize*histsize, gradientFeatures); // get gradient histogram features
+
+  normalizeFeatures(gradientFeatures, histsize*histsize);
+
+  // Combine color and gradient features into a single feature vector
+  features.insert(features.end(), colorFeatures.begin(), colorFeatures.end());
+  features.insert(features.end(), gradientFeatures.begin(), gradientFeatures.end());
 
   return 0; // success
 }
@@ -216,31 +244,116 @@ int featureColorTextureHist(Mat &img, vector<float> &features)
  * features - the features of the vector to be stored
  * imgName - name of the image
  */
-int featureColorTextureDNNHist(Mat &img, vector<float> &features, string imgName)
+int featureColorTextureDNNHist(Mat &img, vector<float> &features, string imgName,
+                               vector<char *> &imgFileNames, vector<vector<float>> &imgFeatureData)
 {
   features.clear();  // empty features vector
   int histsize = 16; // bin size
 
-  Mat colorHist = Mat::zeros(Size(histsize, histsize), CV_32FC1);                 // color histogram
-  Mat gradientHist = Mat::zeros(1, histsize, CV_32F);                             // gradient histogram
-  gradientHistFeature(img, gradientHist, histsize, features);                     // get gradient histogram features
-  colorHistFeature(img, 0, 0, img.rows, img.cols, colorHist, histsize, features); // get color histogram features
+  Mat colorHist = Mat::zeros(Size(histsize, histsize), CV_32FC1); // color histogram
+  Mat gradientHist = Mat::zeros(1, histsize * histsize, CV_32F);             // gradient histogram
 
-  // file names and feature data of the image
-  vector<char *> imgFileNames; 
-  vector<vector<float>> imgFeatureData;
-  read_image_data_csv("../features/ResNet18_olym.csv", imgFileNames, imgFeatureData, 0); // retrieve file names and feature data from ResNet csv
+  vector<float> colorFeatures;
+  vector<float> gradientFeatures;
 
-  for(int i = 0; i < imgFeatureData.size(); i++) {
-    if(imgFileNames[i] == imgName) {
-      for(int j = 0; j< imgFeatureData[i].size(); j++) {
+  colorHistFeature(img, 0, 0, img.rows, img.cols, colorHist, histsize, colorFeatures); // get color histogram features
+  normalizeFeatures(colorFeatures, histsize * histsize);
+
+  Mat greyscaleImg;                            // greyscale image
+  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
+
+  gradientHistFeature(greyscaleImg, gradientHist, histsize*histsize, gradientFeatures); // get gradient histogram features
+  normalizeFeatures(gradientFeatures, histsize*histsize);
+
+  // Combine color and gradient features into a single feature vector
+  features.insert(features.end(), colorFeatures.begin(), colorFeatures.end());
+  features.insert(features.end(), gradientFeatures.begin(), gradientFeatures.end());
+
+  // push back features from DNN to features
+  for (int i = 0; i < imgFeatureData.size(); i++)
+  {
+    if (imgFileNames[i] == imgName)
+    {
+       for (int j = 0; j < imgFeatureData[i].size(); j++)
+      {
         features.push_back(imgFeatureData[i][j]);
       }
       return 0;
     }
   }
 
-  // push back features from DNN to features
+  return 0;
+}
+
+/**
+ * This function finds all faces in a given image and creates the csv features file
+ * img - the image to get the faces for
+ * imgFileName - name of the image
+ * featureCSV - name of the feature CSV file
+ */
+int featureFaces(Mat &img, char *imgFileName, char *featureCSV)
+{
+  int histsize = 256;                                 // bin size
+  Mat gradientHist = Mat::zeros(1, histsize, CV_32F); // gradient histogram
+  Mat greyscaleImg;                                   // greyscale image
+  vector<Rect> faces;
+  vector<float> features;
+
+  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
+
+  faces.clear();
+  detectFaces(greyscaleImg, faces); // get all faces
+
+  // no faces found
+  if (faces.size() == 0)
+  {
+    return -1;
+  }
+
+  // for each face found, create a row in the CSV file
+  for (int i = 0; i < faces.size(); i++)
+  {
+    features.clear();
+    Rect faceRect = faces[i];
+    Mat faceROI = greyscaleImg(faceRect);
+    gradientHistFeature(faceROI, gradientHist, histsize, features); // get gradient histogram features of each face
+    normalizeFeatures(features, histsize);
+    append_image_data_csv(featureCSV, imgFileName, features, 0); // add to CSV
+  }
+
+  return 0;
+}
+
+/**
+ * This function finds the feature vector for the first face found in an image
+ * img - the image to get the faces for
+ * features - features vector of the face
+ */
+int featureFirstFace(Mat &img, vector<float> &features)
+{
+  int histsize = 256;                                 // bin size
+  Mat gradientHist = Mat::zeros(1, histsize, CV_32F); // gradient histogram
+  Mat greyscaleImg;                                   // greyscale image
+  vector<Rect> faces;
+
+  cvtColor(img, greyscaleImg, COLOR_BGR2GRAY); // convert image to greyscale and store it
+
+  faces.clear();
+  features.clear();
+  detectFaces(greyscaleImg, faces); // get all faces
+
+  // no faces found
+  if (faces.size() == 0)
+  {
+    cerr << "No faces found in image. Please pick another image or use another matching method." << endl;
+    return -1;
+  }
+
+  // get first face found
+  Rect faceRect = faces[0];
+  Mat faceROI = greyscaleImg(faceRect);
+  gradientHistFeature(faceROI, gradientHist, histsize, features); // get gradient histogram features of first face found
+  normalizeFeatures(features, histsize);
 
   return 0;
 }
@@ -248,11 +361,12 @@ int featureColorTextureDNNHist(Mat &img, vector<float> &features, string imgName
 /**
  * This function creates the feature csv files given the directory of images.
  * dirname - the name of the directory
- * all other arguments - feature CSV file path
+ * all other arguments - feature CSV file path or pre-loaded csv file data
  */
 int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistCSV,
-                          char *featureMultiHistCSV, char *featureColorTextureHistCSV, 
-                          char *featureColorTextureDNNHistCSV)
+                          char *featureMultiHistCSV, char *featureColorTextureHistCSV,
+                          char *featureColorTextureDNNHistCSV, char *featureFaceCSV,
+                          vector<char *> &imgFileNames, vector<vector<float>> &imgFeatureData)
 {
   // delete the csv files
   if (remove(feature7x7CSV) != 0)
@@ -275,12 +389,17 @@ int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistC
   {
     cerr << "Error: Failed to delete " << featureColorTextureDNNHistCSV << " file." << endl;
   }
+  if (remove(featureFaceCSV) != 0)
+  {
+    cerr << "Error: Failed to delete " << featureFaceCSV << " file." << endl;
+  }
 
   cout << "File " << feature7x7CSV << " has been deleted." << endl;
   cout << "File " << featureHistCSV << " has been deleted." << endl;
   cout << "File " << featureMultiHistCSV << " has been deleted." << endl;
   cout << "File " << featureColorTextureHistCSV << " has been deleted." << endl;
   cout << "File " << featureColorTextureDNNHistCSV << " has been deleted." << endl;
+  cout << "File " << featureFaceCSV << " has been deleted." << endl;
 
   // declare variables for reading the image files
   char buffer[256];
@@ -350,8 +469,11 @@ int createFeatureCSVFiles(char *dirname, char *feature7x7CSV, char *featureHistC
       append_image_data_csv(featureColorTextureHistCSV, dp->d_name, colorTextureHistFeatureVector, 0);
 
       // calculate the color texture DNN histogram feature and append it to the csv file
-      featureColorTextureDNNHist(currentImg, colorTextureHistFeatureVector, dp->d_name);
-      append_image_data_csv(featureColorTextureDNNHistCSV, dp->d_name, colorTextureHistFeatureVector, 0);
+      featureColorTextureDNNHist(currentImg, colorTextureDNNHistFeatureVector, dp->d_name, imgFileNames, imgFeatureData);
+      append_image_data_csv(featureColorTextureDNNHistCSV, dp->d_name, colorTextureDNNHistFeatureVector, 0);
+
+      // calculate the face feature csv file
+      featureFaces(currentImg, dp->d_name, featureFaceCSV);
 
       // created CSV
       csvCreated = true;

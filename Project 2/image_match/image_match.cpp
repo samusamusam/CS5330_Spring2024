@@ -38,12 +38,11 @@ int features_match_SSD(Mat &img, string &targetImageName, int numMatches, vector
   vector<char *> imgFileNames;                                                                    // image file names
   vector<vector<float>> imgFeatureData;                                                           // image feature data
   read_image_data_csv(csvFilePath, imgFileNames, imgFeatureData, 0);                              // read the csv file of the features
-  priority_queue<pair<float, int>, vector<pair<float, int>>, less<pair<float, int>>> smallestSSD; // initialize priority queue
+  priority_queue<pair<float, int>, vector<pair<float, int>>, greater<pair<float, int>>> smallestSSD; // initialize priority queue
 
   // get feature vector data for the target image from csv file
   if (predefined)
   {
-    vector<float> targetImgFeatureData;
     for (int i = 0; i < imgFeatureData.size(); i++)
     {
       if (targetImageName == imgFileNames[i])

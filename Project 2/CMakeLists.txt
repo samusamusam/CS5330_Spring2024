@@ -5,5 +5,5 @@ project(MyProject)
 find_package(OpenCV REQUIRED)
 
 # Executable for Image Matcher program
-add_executable(main main.cpp image_match/image_match.cpp compute_feature/compute_feature.cpp csv_util/csv_util.cpp)
+add_executable(main main.cpp image_match/image_match.cpp compute_feature/compute_feature.cpp csv_util/csv_util.cpp faceDetect/faceDetect.cpp)
 target_link_libraries(main ${OpenCV_LIBS})

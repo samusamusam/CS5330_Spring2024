@@ -187,7 +187,7 @@ int read_image_data_csv(char *filename, std::vector<char *> &filenames, std::vec
     return (-1);
   }
 
-  printf("Reading %s\n", filename);
+  // printf("Reading %s\n", filename);
   for (;;)
   {
     std::vector<float> dvec;
@@ -217,7 +217,7 @@ int read_image_data_csv(char *filename, std::vector<char *> &filenames, std::vec
     filenames.push_back(fname);
   }
   fclose(fp);
-  printf("Finished reading CSV file\n");
+  // printf("Finished reading CSV file\n");
 
   if (echo_file)
   {
