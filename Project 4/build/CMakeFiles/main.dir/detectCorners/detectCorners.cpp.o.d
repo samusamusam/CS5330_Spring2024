@@ -1,5 +1,5 @@
-CMakeFiles/main.dir/main.cpp.o: \
-  /Users/sam/Documents/Northeastern\ Khoury/CS5330\ Pattern\ Recognition\ &\ Computer\ Vision/Projects/Project\ 4/main.cpp \
+CMakeFiles/main.dir/detectCorners/detectCorners.cpp.o: \
+  /Users/sam/Documents/Northeastern\ Khoury/CS5330\ Pattern\ Recognition\ &\ Computer\ Vision/Projects/Project\ 4/detectCorners/detectCorners.cpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/opencv.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/opencv_modules.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/core.hpp \
@@ -912,5 +912,4 @@ CMakeFiles/main.dir/main.cpp.o: \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/stitching/detail/blenders.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/video.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/video/tracking.hpp \
-  /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/video/background_segm.hpp \
-  /Users/sam/Documents/Northeastern\ Khoury/CS5330\ Pattern\ Recognition\ &\ Computer\ Vision/Projects/Project\ 4/detectCorners/detectCorners.h
+  /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/video/background_segm.hpp

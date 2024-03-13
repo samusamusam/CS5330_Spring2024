@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
+.PHONY : detectCorners/detectCorners.o
+
+# target to build an object file
+detectCorners/detectCorners.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.o
+.PHONY : detectCorners/detectCorners.cpp.o
+
+detectCorners/detectCorners.i: detectCorners/detectCorners.cpp.i
+.PHONY : detectCorners/detectCorners.i
+
+# target to preprocess a source file
+detectCorners/detectCorners.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.i
+.PHONY : detectCorners/detectCorners.cpp.i
+
+detectCorners/detectCorners.s: detectCorners/detectCorners.cpp.s
+.PHONY : detectCorners/detectCorners.s
+
+# target to generate assembly for a file
+detectCorners/detectCorners.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.s
+.PHONY : detectCorners/detectCorners.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... detectCorners/detectCorners.o"
+	@echo "... detectCorners/detectCorners.i"
+	@echo "... detectCorners/detectCorners.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

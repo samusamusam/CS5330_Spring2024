@@ -1,12 +1,12 @@
 /**
  * Samuel Lee
-
  * CS 5330
  * Spring 2024
  * Project to perform calibration and utilize augmented reality.
  */
 
 #include "opencv2/opencv.hpp"
+#include "detectCorners/detectCorners.h"
 
 using namespace std;
 using namespace cv;
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   // initialize variables to be used
   Size chessboardSize(9,6);
   vector<Point2f> cornerSet;
-  Mat image, grayImage;
+  Mat image;
 
   // indefinite for loop that breaks based on key press
   for (;;)
@@ -45,24 +45,8 @@ int main(int argc, char *argv[])
       return (-1);
     }
 
-    // initialize gray image
-    cvtColor(image, grayImage, COLOR_BGR2GRAY);
-
-    bool cornersFound = findChessboardCorners(grayImage, chessboardSize, cornerSet, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FILTER_QUADS + CALIB_CB_FAST_CHECK);
-
-    // if corners found successfully
-    if (cornersFound) {
-      // variables for cornerSubPix
-      Size searchArea(11,11);
-      Size zeroZone(-1,-1);
-      TermCriteria terminationCriteria(TermCriteria::EPS + TermCriteria::COUNT, 30, 0.1);
-
-      // refine position of corners
-      cornerSubPix(grayImage, cornerSet, searchArea, zeroZone, terminationCriteria);
-
-      // draw corners
-      drawChessboardCorners(image, chessboardSize, cornerSet, cornersFound);
-    }
+    // detect and display corners of chessboard
+    getCorners(chessboardSize, cornerSet, image);
 
     // see if there is a waiting keystroke
     char keyPressed = waitKey(1);

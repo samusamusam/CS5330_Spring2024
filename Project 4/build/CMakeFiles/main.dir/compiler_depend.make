@@ -809,6 +809,7 @@ CMakeFiles/main.dir/main.cpp.o: /Users/sam/Documents/Northeastern\ Khoury/CS5330
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdint.h \
+  /Users/sam/Documents/Northeastern\ Khoury/CS5330\ Pattern\ Recognition\ &\ Computer\ Vision/Projects/Project\ 4/detectCorners/detectCorners.h \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/imgproc/segmentation.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/calib3d.hpp \
   /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/core.hpp \
@@ -1038,6 +1039,8 @@ CMakeFiles/main.dir/main.cpp.o: /Users/sam/Documents/Northeastern\ Khoury/CS5330
 /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/core/affine.hpp:
 
 /opt/homebrew/Cellar/opencv/4.8.1_5/include/opencv4/opencv2/core.hpp:
+
+/Users/sam/Documents/Northeastern\ Khoury/CS5330\ Pattern\ Recognition\ &\ Computer\ Vision/Projects/Project\ 4/detectCorners/detectCorners.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdarg.h:
 
