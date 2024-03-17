@@ -32,11 +32,25 @@ int main(int argc, char *argv[])
   printf("Expected size: %d %d\n", refS.width, refS.height);
 
   // read calibration data
-  FileStorage fs("../calibrationData.yml", FileStorage::READ);
+  string calibrationDataFilePath = "../calibrationData.yml";
+  FileStorage fs(calibrationDataFilePath, FileStorage::READ);
+  if (!fs.isOpened())
+  {
+    cout << "Calibration data file does not exist. Please ensure you create this first." << endl;
+    return -1;
+  }
+
   Mat cameraMat, distortionCoeffs;
   fs["camera_matrix"] >> cameraMat;
-  fs["distance_coefficients"] >> distortionCoeffs;
+  fs["distortion_coefficients"] >> distortionCoeffs;
   fs.release();
+
+  // check if required data for program exist
+  if (cameraMat.empty() || distortionCoeffs.empty())
+  {
+    cout << "The calibration data file does not have all the parameters needed to detect the chessboard." << endl;
+    return -1;
+  }
 
   // initialize variables to be used
   Size chessboardSize(9, 6);
@@ -74,8 +88,10 @@ int main(int argc, char *argv[])
       // get checkerboard's pose in terms of rotation and translation
       solvePnP(point_set, corner_set, cameraMat, distortionCoeffs, rotations, translations);
 
-      cout << "Rotation:" << endl << rotations << endl;
-      cout << "Translation:" << endl << translations << endl;
+      cout << "Rotation:" << endl
+           << rotations << endl;
+      cout << "Translation:" << endl
+           << translations << endl;
     }
 
     // if user presses 'q' exit program
