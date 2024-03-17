@@ -2,12 +2,14 @@
  * Samuel Lee
  * CS 5330
  * Spring 2024
- * Project to perform calibration and utilize augmented reality.
+ * This program calibrates a camera and stores the parameters in a file.
  */
 
 #include "opencv2/opencv.hpp"
 #include "detectCorners/detectCorners.h"
 #include "calibration/calibration.h"
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -42,7 +44,7 @@ int main(int argc, char *argv[])
   vector<vector<Point2f>> corner_list;
 
   // get chessboard world points and store it in point_set
-  getChessboardWorldPoints(point_set, chessboardSize);
+  getChessboardWorldPointsVec3f(point_set, chessboardSize);
 
   // indefinite for loop that breaks based on key press
   for (;;)
@@ -81,8 +83,8 @@ int main(int argc, char *argv[])
     {
       // get camera matrix
       Mat cameraMat = Mat::eye(3, 3, CV_64F);
-      cameraMat.at<double>(0, 2) = img.cols / 2;
-      cameraMat.at<double>(1, 2) = img.rows / 2;
+      cameraMat.at<double>(0, 2) = image.cols / 2;
+      cameraMat.at<double>(1, 2) = image.rows / 2;
 
       vector<Mat> rotations, translations;             // variables to store resulting rotations and translations
       Mat distortionCoeffs = Mat::zeros(0, 0, CV_64F); // assuming no distortion

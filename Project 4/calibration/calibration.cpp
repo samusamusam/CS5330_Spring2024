@@ -6,6 +6,7 @@
  */
 
 #include "opencv2/opencv.hpp"
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -15,7 +16,24 @@ using namespace cv;
  * point_set - data structure to store world points in
  * chessboardSize - size of the chessboard
 */
-int getChessboardWorldPoints(vector<Vec3f> &point_set, const Size &chessboardSize)
+int getChessboardWorldPointsVec3f(vector<Vec3f> &point_set, const Size &chessboardSize)
+{
+  for (int i = 0; i < chessboardSize.height; i++)
+  {
+    for (int j = 0; j < chessboardSize.width; j++)
+    {
+      point_set.push_back(Vec3f(j, -i, 0));
+    }
+  }
+  return (0);
+}
+
+/**
+ * This function gets the world points of a chessboard according to its size
+ * point_set - data structure to store world points in
+ * chessboardSize - size of the chessboard
+*/
+int getChessboardWorldPointsPoint3f(vector<Point3f> &point_set, const Size &chessboardSize)
 {
   for (int i = 0; i < chessboardSize.height; i++)
   {

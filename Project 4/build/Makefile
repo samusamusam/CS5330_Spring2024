@@ -117,24 +117,62 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named calibrate
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+calibrate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 calibrate
+.PHONY : calibrate
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+calibrate/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/build
+.PHONY : calibrate/fast
+
+#=============================================================================
+# Target rules for targets named detect
+
+# Build rule for target.
+detect: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 detect
+.PHONY : detect
+
+# fast build rule for target.
+detect/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/build
+.PHONY : detect/fast
+
+augmentedReality.o: augmentedReality.cpp.o
+.PHONY : augmentedReality.o
+
+# target to build an object file
+augmentedReality.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/augmentedReality.cpp.o
+.PHONY : augmentedReality.cpp.o
+
+augmentedReality.i: augmentedReality.cpp.i
+.PHONY : augmentedReality.i
+
+# target to preprocess a source file
+augmentedReality.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/augmentedReality.cpp.i
+.PHONY : augmentedReality.cpp.i
+
+augmentedReality.s: augmentedReality.cpp.s
+.PHONY : augmentedReality.s
+
+# target to generate assembly for a file
+augmentedReality.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/augmentedReality.cpp.s
+.PHONY : augmentedReality.cpp.s
 
 calibration/calibration.o: calibration/calibration.cpp.o
 .PHONY : calibration/calibration.o
 
 # target to build an object file
 calibration/calibration.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/calibration/calibration.cpp.o
 .PHONY : calibration/calibration.cpp.o
 
 calibration/calibration.i: calibration/calibration.cpp.i
@@ -142,7 +180,8 @@ calibration/calibration.i: calibration/calibration.cpp.i
 
 # target to preprocess a source file
 calibration/calibration.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/calibration/calibration.cpp.i
 .PHONY : calibration/calibration.cpp.i
 
 calibration/calibration.s: calibration/calibration.cpp.s
@@ -150,7 +189,8 @@ calibration/calibration.s: calibration/calibration.cpp.s
 
 # target to generate assembly for a file
 calibration/calibration.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/calibration/calibration.cpp.s
 .PHONY : calibration/calibration.cpp.s
 
 detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
@@ -158,7 +198,8 @@ detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
 
 # target to build an object file
 detectCorners/detectCorners.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/detectCorners/detectCorners.cpp.o
 .PHONY : detectCorners/detectCorners.cpp.o
 
 detectCorners/detectCorners.i: detectCorners/detectCorners.cpp.i
@@ -166,7 +207,8 @@ detectCorners/detectCorners.i: detectCorners/detectCorners.cpp.i
 
 # target to preprocess a source file
 detectCorners/detectCorners.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/detectCorners/detectCorners.cpp.i
 .PHONY : detectCorners/detectCorners.cpp.i
 
 detectCorners/detectCorners.s: detectCorners/detectCorners.cpp.s
@@ -174,32 +216,33 @@ detectCorners/detectCorners.s: detectCorners/detectCorners.cpp.s
 
 # target to generate assembly for a file
 detectCorners/detectCorners.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/detectCorners/detectCorners.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/detectCorners/detectCorners.cpp.s
 .PHONY : detectCorners/detectCorners.cpp.s
 
-main.o: main.cpp.o
-.PHONY : main.o
+getCalibration.o: getCalibration.cpp.o
+.PHONY : getCalibration.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
-.PHONY : main.cpp.o
+getCalibration.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/getCalibration.cpp.o
+.PHONY : getCalibration.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+getCalibration.i: getCalibration.cpp.i
+.PHONY : getCalibration.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
-.PHONY : main.cpp.i
+getCalibration.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/getCalibration.cpp.i
+.PHONY : getCalibration.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+getCalibration.s: getCalibration.cpp.s
+.PHONY : getCalibration.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
-.PHONY : main.cpp.s
+getCalibration.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/getCalibration.cpp.s
+.PHONY : getCalibration.cpp.s
 
 # Help Target
 help:
@@ -209,16 +252,20 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... main"
+	@echo "... calibrate"
+	@echo "... detect"
+	@echo "... augmentedReality.o"
+	@echo "... augmentedReality.i"
+	@echo "... augmentedReality.s"
 	@echo "... calibration/calibration.o"
 	@echo "... calibration/calibration.i"
 	@echo "... calibration/calibration.s"
 	@echo "... detectCorners/detectCorners.o"
 	@echo "... detectCorners/detectCorners.i"
 	@echo "... detectCorners/detectCorners.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... getCalibration.o"
+	@echo "... getCalibration.i"
+	@echo "... getCalibration.s"
 .PHONY : help
 
 
