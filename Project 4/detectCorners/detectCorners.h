@@ -11,6 +11,6 @@
 #include <opencv2/opencv.hpp>
 
 // function declarations
-int getCorners(const cv::Size chessboardSize, std::vector<cv::Point2f> &cornerSet, cv::Mat &image);
+int getCorners(const cv::Size chessboardSize, std::vector<cv::Point2f> &cornerSet, cv::Mat &image, bool &cornersFound);
 
 #endif // DETECTCORNERS_H

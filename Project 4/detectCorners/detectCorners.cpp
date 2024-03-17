@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-int getCorners(const Size chessboardSize, vector<Point2f> &cornerSet, Mat &image)
+int getCorners(const Size chessboardSize, vector<Point2f> &cornerSet, Mat &image, bool &cornersFound)
 {
 
   // initialize gray image
@@ -18,7 +18,7 @@ int getCorners(const Size chessboardSize, vector<Point2f> &cornerSet, Mat &image
   cvtColor(image, grayImage, COLOR_BGR2GRAY);
 
   // find corners of chessboard
-  bool cornersFound = findChessboardCorners(grayImage, chessboardSize, cornerSet, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FILTER_QUADS + CALIB_CB_FAST_CHECK);
+  cornersFound = findChessboardCorners(grayImage, chessboardSize, cornerSet, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FILTER_QUADS + CALIB_CB_FAST_CHECK);
 
   // if corners found successfully
   if (cornersFound)

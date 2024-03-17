@@ -5,5 +5,5 @@ project(MyProject)
 find_package(OpenCV REQUIRED)
 
 # Executable for AR Program
-add_executable(main main.cpp detectCorners/detectCorners.cpp)
-target_link_libraries(main ${OpenCV_LIBS})
+add_executable(main main.cpp detectCorners/detectCorners.cpp calibration/calibration.cpp)
+target_link_libraries(main ${OpenCV_LIBS}) 
