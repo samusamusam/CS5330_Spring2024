@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+calibration/calibration.o: calibration/calibration.cpp.o
+.PHONY : calibration/calibration.o
+
+# target to build an object file
+calibration/calibration.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.o
+.PHONY : calibration/calibration.cpp.o
+
+calibration/calibration.i: calibration/calibration.cpp.i
+.PHONY : calibration/calibration.i
+
+# target to preprocess a source file
+calibration/calibration.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.i
+.PHONY : calibration/calibration.cpp.i
+
+calibration/calibration.s: calibration/calibration.cpp.s
+.PHONY : calibration/calibration.s
+
+# target to generate assembly for a file
+calibration/calibration.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/calibration/calibration.cpp.s
+.PHONY : calibration/calibration.cpp.s
+
 detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
 .PHONY : detectCorners/detectCorners.o
 
@@ -186,6 +210,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... calibration/calibration.o"
+	@echo "... calibration/calibration.i"
+	@echo "... calibration/calibration.s"
 	@echo "... detectCorners/detectCorners.o"
 	@echo "... detectCorners/detectCorners.i"
 	@echo "... detectCorners/detectCorners.s"

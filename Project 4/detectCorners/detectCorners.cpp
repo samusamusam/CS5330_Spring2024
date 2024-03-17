@@ -10,6 +10,13 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * This function gets the corners of the chessboard shown in an image
+ * chessboardSize - size of the chessboard
+ * cornerSet - corners found in the chessboard
+ * image - image to detect chessboard from
+ * cornersFound - boolean value indicating whether the corners were found
+*/
 int getCorners(const Size chessboardSize, vector<Point2f> &cornerSet, Mat &image, bool &cornersFound)
 {
 

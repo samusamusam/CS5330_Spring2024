@@ -11,6 +11,6 @@
 #include <opencv2/opencv.hpp>
 
 // function declarations
-int getChessboardWorldPoints(std::Vector<cv::Vec3f> &point_set, const cv::Size &chessboardSize);
+int getChessboardWorldPoints(std::vector<cv::Vec3f> &point_set, const cv::Size &chessboardSize);
 
 #endif // CALIBRATION_H

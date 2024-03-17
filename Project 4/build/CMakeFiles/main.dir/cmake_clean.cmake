@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/main.dir/calibration/calibration.cpp.o"
+  "CMakeFiles/main.dir/calibration/calibration.cpp.o.d"
   "CMakeFiles/main.dir/detectCorners/detectCorners.cpp.o"
   "CMakeFiles/main.dir/detectCorners/detectCorners.cpp.o.d"
   "CMakeFiles/main.dir/main.cpp.o"

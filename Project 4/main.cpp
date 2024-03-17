@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
   vector<Point2f> corner_set;
   bool cornersFound = false;
   Mat image;
+  int imageCounter = 0;
 
   // data structure to hold data for calibration
   vector<Vec3f> point_set;
@@ -60,13 +61,56 @@ int main(int argc, char *argv[])
 
     // see if there is a waiting keystroke
     char keyPressed = waitKey(1);
-    
-    // if user presses 's' and corners are found save corner_set and point_set to corresponding lists
-    if (keyPressed == 's' && cornersFound) {
+
+    // if user presses 's' and corners are found, save corner_set and point_set to corresponding lists
+    if (keyPressed == 's' && cornersFound)
+    {
       corner_list.push_back(corner_set);
-      point_list.push_back(point_set); 
+      point_list.push_back(point_set);
+
+      // store calibration image in image directory and save by nth image file name
+      string imageFileName = "../calibration_directory/calibrationImage_" + to_string(imageCounter++) + ".png";
+      imwrite(imageFileName, image);
+      cout << "Saved calibration image in " << imageFileName << endl;
 
       cout << "Saved corners and world points to corresponding lists for calibration." << endl;
+    }
+
+    // if user presses 'c' and enough calibration images are saved, calibrate the camera
+    if (keyPressed == 'c' && imageCounter >= 5)
+    {
+      // get camera matrix
+      Mat cameraMat = Mat::eye(3, 3, CV_64F);
+      cameraMat.at<double>(0, 2) = img.cols / 2;
+      cameraMat.at<double>(1, 2) = img.rows / 2;
+
+      vector<Mat> rotations, translations;             // variables to store resulting rotations and translations
+      Mat distortionCoeffs = Mat::zeros(0, 0, CV_64F); // assuming no distortion
+
+      // print pre-calibrated camera matrix
+      cout << "Pre-calibrated camera matrix: " << endl
+           << cameraMat << endl;
+
+      // calibrate camera
+      double reprojectionErr = calibrateCamera(point_list, corner_list, image.size(), cameraMat, distortionCoeffs, rotations, translations, CALIB_FIX_ASPECT_RATIO);
+
+      // print post-calibration results
+      cout << "Calibrated camera matrix: " << endl
+           << cameraMat << endl;
+      cout << "Reprojection error: " << reprojectionErr << endl;
+      cout << "Distortion coefficients: " << endl
+           << distortionCoeffs << endl;
+
+      // save camera matrices and reprojection error to a file
+      FileStorage fs("../calibrationData.yml", FileStorage::WRITE);
+      fs << "camera_matrix" << cameraMat;
+      fs << "distortion_coefficients" << distortionCoeffs;
+      fs << "reprojection_error" << reprojectionErr;
+      fs << "rotations" << rotations;
+      fs << "translations" << translations;
+
+      fs.release();
+      cout << "Saved calibration data to file." << endl;
     }
 
     // if user presses 'q' exit program
