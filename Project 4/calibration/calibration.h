@@ -12,7 +12,8 @@
 #include <vector>
 
 // function declarations
-int getChessboardWorldPointsVec3f(std::vector<cv::Vec3f> &point_set, const cv::Size &chessboardSize);
-int getChessboardWorldPointsPoint3f(std::vector<cv::Point3f> &point_set, const cv::Size &chessboardSize);
+int getChessboardWorldPoints(std::vector<cv::Point3f> &point_set, const cv::Size &chessboardSize);
+int project3DAxes(cv::Mat &rotations, cv::Mat &translations, cv::Mat &cameraMat, cv::Mat &distortionCoeffs, cv::Mat &img);
+int projectShape3D(cv::Mat &rotations, cv::Mat &translations, cv::Mat &cameraMat, cv::Mat &distortionCoeffs, cv::Mat &img);
 
 #endif // CALIBRATION_H

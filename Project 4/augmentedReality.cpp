@@ -52,15 +52,22 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+  // print post-calibration results
+  cout << "Calibrated camera matrix: " << endl
+       << cameraMat << endl;
+  cout << "Distortion coefficients: " << endl
+       << distortionCoeffs << endl;
+
   // initialize variables to be used
   Size chessboardSize(9, 6);
   vector<Point3f> point_set;
   vector<Point2f> corner_set;
   bool cornersFound = false;
   Mat image;
+  namedWindow("Video Feed", WINDOW_NORMAL);
 
   // get chessboard world points and store it in point_set
-  getChessboardWorldPointsPoint3f(point_set, chessboardSize);
+  getChessboardWorldPoints(point_set, chessboardSize);
 
   // indefinite for loop that breaks based on key press
   for (;;)
@@ -92,6 +99,12 @@ int main(int argc, char *argv[])
            << rotations << endl;
       cout << "Translation:" << endl
            << translations << endl;
+
+      // project 3D axes
+      project3DAxes(rotations,translations,cameraMat,distortionCoeffs,image);
+
+      // project 3D object
+      projectShape3D(rotations,translations,cameraMat,distortionCoeffs,image);
     }
 
     // if user presses 'q' exit program
@@ -99,6 +112,7 @@ int main(int argc, char *argv[])
     {
       break;
     }
+    imshow("Video Feed", image);
   }
   delete capdev;
 

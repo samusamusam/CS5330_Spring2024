@@ -64,7 +64,8 @@ CMAKE_BINARY_DIR = "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Reco
 
 # The main recursive "all" target.
 all: CMakeFiles/calibrate.dir/all
-all: CMakeFiles/detect.dir/all
+all: CMakeFiles/AR.dir/all
+all: CMakeFiles/feature.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,7 +74,8 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/calibrate.dir/clean
-clean: CMakeFiles/detect.dir/clean
+clean: CMakeFiles/AR.dir/clean
+clean: CMakeFiles/feature.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -83,7 +85,7 @@ clean: CMakeFiles/detect.dir/clean
 CMakeFiles/calibrate.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=1,2,3,4 "Built target calibrate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=5,6,7,8 "Built target calibrate"
 .PHONY : CMakeFiles/calibrate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -103,30 +105,56 @@ CMakeFiles/calibrate.dir/clean:
 .PHONY : CMakeFiles/calibrate.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/detect.dir
+# Target rules for target CMakeFiles/AR.dir
 
 # All Build rule for target.
-CMakeFiles/detect.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=5,6,7,8 "Built target detect"
-.PHONY : CMakeFiles/detect.dir/all
+CMakeFiles/AR.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=1,2,3,4 "Built target AR"
+.PHONY : CMakeFiles/AR.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/detect.dir/rule: cmake_check_build_system
+CMakeFiles/AR.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 4
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/detect.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/AR.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 0
-.PHONY : CMakeFiles/detect.dir/rule
+.PHONY : CMakeFiles/AR.dir/rule
 
 # Convenience name for target.
-detect: CMakeFiles/detect.dir/rule
-.PHONY : detect
+AR: CMakeFiles/AR.dir/rule
+.PHONY : AR
 
 # clean rule for target.
-CMakeFiles/detect.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/detect.dir/build.make CMakeFiles/detect.dir/clean
-.PHONY : CMakeFiles/detect.dir/clean
+CMakeFiles/AR.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/clean
+.PHONY : CMakeFiles/AR.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/feature.dir
+
+# All Build rule for target.
+CMakeFiles/feature.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=9,10 "Built target feature"
+.PHONY : CMakeFiles/feature.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/feature.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/feature.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 0
+.PHONY : CMakeFiles/feature.dir/rule
+
+# Convenience name for target.
+feature: CMakeFiles/feature.dir/rule
+.PHONY : feature
+
+# clean rule for target.
+CMakeFiles/feature.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/clean
+.PHONY : CMakeFiles/feature.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

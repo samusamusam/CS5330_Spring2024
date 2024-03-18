@@ -36,15 +36,16 @@ int main(int argc, char *argv[])
   vector<Point2f> corner_set;
   bool cornersFound = false;
   Mat image;
-  int imageCounter = 0;
+  int imageCounter = 1;
+  namedWindow("Video Feed", WINDOW_NORMAL);
 
   // data structure to hold data for calibration
-  vector<Vec3f> point_set;
-  vector<vector<Vec3f>> point_list;
+  vector<Point3f> point_set;
+  vector<vector<Point3f>> point_list;
   vector<vector<Point2f>> corner_list;
 
   // get chessboard world points and store it in point_set
-  getChessboardWorldPointsVec3f(point_set, chessboardSize);
+  getChessboardWorldPoints(point_set, chessboardSize);
 
   // indefinite for loop that breaks based on key press
   for (;;)
@@ -120,6 +121,7 @@ int main(int argc, char *argv[])
     {
       break;
     }
+    imshow("Video Feed", image);
   }
   delete capdev;
 

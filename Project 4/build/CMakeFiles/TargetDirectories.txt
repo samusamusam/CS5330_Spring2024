@@ -1,4 +1,5 @@
 /Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/calibrate.dir
-/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/detect.dir
+/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/AR.dir
+/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/feature.dir
 /Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/edit_cache.dir
 /Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles/rebuild_cache.dir
