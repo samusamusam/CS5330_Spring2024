@@ -15,3 +15,7 @@ target_link_libraries(AR ${OpenCV_LIBS})
 # Executable for robust feature
 add_executable(feature detectFeatures.cpp)
 target_link_libraries(feature ${OpenCV_LIBS}) 
+
+# Executable for robust feature
+add_executable(generateAR generateAR.cpp detectCorners/detectCorners.cpp calibration/calibration.cpp)
+target_link_libraries(generateAR ${OpenCV_LIBS}) 

@@ -66,6 +66,7 @@ CMAKE_BINARY_DIR = "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Reco
 all: CMakeFiles/calibrate.dir/all
 all: CMakeFiles/AR.dir/all
 all: CMakeFiles/feature.dir/all
+all: CMakeFiles/generateAR.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -76,6 +77,7 @@ preinstall:
 clean: CMakeFiles/calibrate.dir/clean
 clean: CMakeFiles/AR.dir/clean
 clean: CMakeFiles/feature.dir/clean
+clean: CMakeFiles/generateAR.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -155,6 +157,32 @@ feature: CMakeFiles/feature.dir/rule
 CMakeFiles/feature.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/clean
 .PHONY : CMakeFiles/feature.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/generateAR.dir
+
+# All Build rule for target.
+CMakeFiles/generateAR.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" --progress-num=11,12,13,14 "Built target generateAR"
+.PHONY : CMakeFiles/generateAR.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/generateAR.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/generateAR.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sam/Documents/Northeastern Khoury/CS5330 Pattern Recognition & Computer Vision/Projects/Project 4/build/CMakeFiles" 0
+.PHONY : CMakeFiles/generateAR.dir/rule
+
+# Convenience name for target.
+generateAR: CMakeFiles/generateAR.dir/rule
+.PHONY : generateAR
+
+# clean rule for target.
+CMakeFiles/generateAR.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/clean
+.PHONY : CMakeFiles/generateAR.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

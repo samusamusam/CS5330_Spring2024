@@ -14,5 +14,6 @@
 
 // function declarations
 int getCorners(const cv::Size chessboardSize, std::vector<cv::Point2f> &cornerSet, cv::Mat &image, bool &cornersFound);
+int getMultipleCorners(const cv::Size chessboardSize, std::vector<std::vector<cv::Point2f>> &multipleCornerSet, cv::Mat &image);
 
 #endif // DETECTCORNERS_H

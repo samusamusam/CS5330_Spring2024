@@ -155,6 +155,19 @@ feature/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/build
 .PHONY : feature/fast
 
+#=============================================================================
+# Target rules for targets named generateAR
+
+# Build rule for target.
+generateAR: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 generateAR
+.PHONY : generateAR
+
+# fast build rule for target.
+generateAR/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/build
+.PHONY : generateAR/fast
+
 augmentedReality.o: augmentedReality.cpp.o
 .PHONY : augmentedReality.o
 
@@ -186,6 +199,7 @@ calibration/calibration.o: calibration/calibration.cpp.o
 calibration/calibration.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/calibration/calibration.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/calibration/calibration.cpp.o
 .PHONY : calibration/calibration.cpp.o
 
 calibration/calibration.i: calibration/calibration.cpp.i
@@ -195,6 +209,7 @@ calibration/calibration.i: calibration/calibration.cpp.i
 calibration/calibration.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/calibration/calibration.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/calibration/calibration.cpp.i
 .PHONY : calibration/calibration.cpp.i
 
 calibration/calibration.s: calibration/calibration.cpp.s
@@ -204,6 +219,7 @@ calibration/calibration.s: calibration/calibration.cpp.s
 calibration/calibration.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/calibration/calibration.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/calibration/calibration.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/calibration/calibration.cpp.s
 .PHONY : calibration/calibration.cpp.s
 
 detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
@@ -213,6 +229,7 @@ detectCorners/detectCorners.o: detectCorners/detectCorners.cpp.o
 detectCorners/detectCorners.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/detectCorners/detectCorners.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/detectCorners/detectCorners.cpp.o
 .PHONY : detectCorners/detectCorners.cpp.o
 
 detectCorners/detectCorners.i: detectCorners/detectCorners.cpp.i
@@ -222,6 +239,7 @@ detectCorners/detectCorners.i: detectCorners/detectCorners.cpp.i
 detectCorners/detectCorners.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/detectCorners/detectCorners.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/detectCorners/detectCorners.cpp.i
 .PHONY : detectCorners/detectCorners.cpp.i
 
 detectCorners/detectCorners.s: detectCorners/detectCorners.cpp.s
@@ -231,6 +249,7 @@ detectCorners/detectCorners.s: detectCorners/detectCorners.cpp.s
 detectCorners/detectCorners.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/calibrate.dir/build.make CMakeFiles/calibrate.dir/detectCorners/detectCorners.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AR.dir/build.make CMakeFiles/AR.dir/detectCorners/detectCorners.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/detectCorners/detectCorners.cpp.s
 .PHONY : detectCorners/detectCorners.cpp.s
 
 detectFeatures.o: detectFeatures.cpp.o
@@ -256,6 +275,30 @@ detectFeatures.s: detectFeatures.cpp.s
 detectFeatures.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/feature.dir/build.make CMakeFiles/feature.dir/detectFeatures.cpp.s
 .PHONY : detectFeatures.cpp.s
+
+generateAR.o: generateAR.cpp.o
+.PHONY : generateAR.o
+
+# target to build an object file
+generateAR.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/generateAR.cpp.o
+.PHONY : generateAR.cpp.o
+
+generateAR.i: generateAR.cpp.i
+.PHONY : generateAR.i
+
+# target to preprocess a source file
+generateAR.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/generateAR.cpp.i
+.PHONY : generateAR.cpp.i
+
+generateAR.s: generateAR.cpp.s
+.PHONY : generateAR.s
+
+# target to generate assembly for a file
+generateAR.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generateAR.dir/build.make CMakeFiles/generateAR.dir/generateAR.cpp.s
+.PHONY : generateAR.cpp.s
 
 getCalibration.o: getCalibration.cpp.o
 .PHONY : getCalibration.o
@@ -292,6 +335,7 @@ help:
 	@echo "... AR"
 	@echo "... calibrate"
 	@echo "... feature"
+	@echo "... generateAR"
 	@echo "... augmentedReality.o"
 	@echo "... augmentedReality.i"
 	@echo "... augmentedReality.s"
@@ -304,6 +348,9 @@ help:
 	@echo "... detectFeatures.o"
 	@echo "... detectFeatures.i"
 	@echo "... detectFeatures.s"
+	@echo "... generateAR.o"
+	@echo "... generateAR.i"
+	@echo "... generateAR.s"
 	@echo "... getCalibration.o"
 	@echo "... getCalibration.i"
 	@echo "... getCalibration.s"
