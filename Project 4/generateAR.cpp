@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
   bool cornersFound = false;
   Mat image;
   VideoCapture video;
-  namedWindow("AR Output", WINDOW_NORMAL);
 
   // get chessboard world points and store it in point_set
   getChessboardWorldPoints(point_set, chessboardSize);
@@ -145,16 +144,24 @@ int main(int argc, char *argv[])
         cout << "Translation:" << endl
              << translations << endl;
 
+        // generate 3D object
+        projectShape3D(rotations, translations, cameraMat, distortionCoeffs, image);
+
         // save image into a new file
         string newImageFilePath = "../generated_images/test.png";
-        if(imwrite(newImageFilePath, image)) {
+        if (imwrite(newImageFilePath, image))
+        {
           cout << "Image with AR saved successfully to " + newImageFilePath << endl;
           return 0;
-        } else {
+        }
+        else
+        {
           cerr << "Image with AR did not save successfully." << endl;
           return -1;
         }
-      } else {
+      }
+      else
+      {
         cout << "No chessboard target found. Exiting." << endl;
         return -1;
       }
@@ -172,10 +179,51 @@ int main(int argc, char *argv[])
     {
       cout << "Video file read successfully." << endl;
 
-      // find target
+      // set up VideoWriter to output a video
+      Size frameSize(static_cast<int>(video.get(CAP_PROP_FRAME_WIDTH)),
+                     static_cast<int>(video.get(CAP_PROP_FRAME_HEIGHT)));
+      double fps = video.get(CAP_PROP_FPS);
+      VideoWriter outputVideo("../generated_images/test.mp4", VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, frameSize, true);
 
+      // check if output video opened
+      if (!outputVideo.isOpened())
+      {
+        cerr << "Error opening the video to write on." << endl;
+        return -1;
+      }
+
+      Mat frame; // variable to hold each frame in the video
+      for (;;)
+      {
+        video >> frame;
+
+        // checks if no more frames exist
+        if (frame.empty())
+        {
+          break;
+        }
+
+        // detect and display corners of chessboard
+        getCorners(chessboardSize, corner_set, frame, cornersFound);
+
+        // if corners are found
+        if (cornersFound)
+        {
+          Mat rotations, translations;
+
+          // get checkerboard's pose in terms of rotation and translation
+          solvePnP(point_set, corner_set, cameraMat, distortionCoeffs, rotations, translations);
+
+          // generate 3D object
+          projectShape3D(rotations, translations, cameraMat, distortionCoeffs, frame);
+        }
+
+        // add frame to video output
+        outputVideo << frame;
+      }
       video.release();
+      outputVideo.release();
     }
+    return (0);
   }
-  return (0);
 }

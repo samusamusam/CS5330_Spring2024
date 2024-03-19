@@ -53,7 +53,6 @@ int getCorners(const Size chessboardSize, vector<Point2f> &cornerSet, Mat &image
  */
 int getMultipleCorners(const Size chessboardSize, vector<vector<Point2f>> &multipleCornerSet, Mat &image)
 {
-
   // initialize gray image
   Mat grayImage;
   cvtColor(image, grayImage, COLOR_BGR2GRAY);
@@ -65,6 +64,7 @@ int getMultipleCorners(const Size chessboardSize, vector<vector<Point2f>> &multi
   // initialize mask of image
   Mat mask = Mat::ones(grayImage.size(), CV_8UC1) * 255;
 
+  // loop until no new target is found
   while (true)
   {
     cornerSet.clear();    // clear cornerSet before each iteration
@@ -76,7 +76,7 @@ int getMultipleCorners(const Size chessboardSize, vector<vector<Point2f>> &multi
 
     // find corners of chessboard
     cornersFound = findChessboardCorners(maskedGray, chessboardSize, cornerSet, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FILTER_QUADS + CALIB_CB_FAST_CHECK);
-    
+
     // if corners found successfully
     if (cornersFound)
     {
@@ -95,12 +95,15 @@ int getMultipleCorners(const Size chessboardSize, vector<vector<Point2f>> &multi
       drawChessboardCorners(image, chessboardSize, cornerSet, cornersFound);
 
       // mask out the currently found corner set to prevent it from being found again
-      for (const auto &pt : cornerSet) {
+      for (const auto &pt : cornerSet)
+      {
         circle(mask, pt, 10, Scalar(0), -1);
       }
-    } else {
+    }
+    else
+    {
       break;
     }
-    }
-    return (0);
   }
+  return (0);
+}
