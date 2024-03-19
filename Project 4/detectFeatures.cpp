@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
       for (int j = 0; j < dst_norm.cols; j++)
       {
         // threshold for corner detection
-        if (rowPtr[j] > 110)
+        if (rowPtr[j] > 130)
         { 
           circle(image, Point(j, i), 5, Scalar(255, 0, 0), 2, 8, 0);
         }

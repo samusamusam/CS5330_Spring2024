@@ -41,8 +41,11 @@ int main(int argc, char *argv[])
   }
 
   Mat cameraMat, distortionCoeffs;
+  double reprojection_err;
+
   fs["camera_matrix"] >> cameraMat;
   fs["distortion_coefficients"] >> distortionCoeffs;
+  fs["reprojection_error"] >> reprojection_err;
   fs.release();
 
   // check if required data for program exist
@@ -57,6 +60,8 @@ int main(int argc, char *argv[])
        << cameraMat << endl;
   cout << "Distortion coefficients: " << endl
        << distortionCoeffs << endl;
+  cout << "Reprojection error: " << endl
+       << reprojection_err << endl;
 
   // initialize variables to be used
   Size chessboardSize(9, 6);
@@ -101,10 +106,10 @@ int main(int argc, char *argv[])
            << translations << endl;
 
       // project 3D axes
-      project3DAxes(rotations,translations,cameraMat,distortionCoeffs,image);
+      project3DAxes(rotations, translations, cameraMat, distortionCoeffs, image);
 
       // project 3D object
-      projectShape3D(rotations,translations,cameraMat,distortionCoeffs,image);
+      projectShape3D(rotations, translations, cameraMat, distortionCoeffs, image);
     }
 
     // if user presses 'q' exit program
