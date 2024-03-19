@@ -55,6 +55,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/calibrate.dir/DependInfo.cmake"
   "CMakeFiles/AR.dir/DependInfo.cmake"
+  "CMakeFiles/AR2.dir/DependInfo.cmake"
   "CMakeFiles/feature.dir/DependInfo.cmake"
   "CMakeFiles/generateAR.dir/DependInfo.cmake"
   )

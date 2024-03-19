@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
       Size frameSize(static_cast<int>(video.get(CAP_PROP_FRAME_WIDTH)),
                      static_cast<int>(video.get(CAP_PROP_FRAME_HEIGHT)));
       double fps = video.get(CAP_PROP_FPS);
-      VideoWriter outputVideo("../generated_images/test.mp4", VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, frameSize, true);
+      VideoWriter outputVideo("../generated_images/test.mp4", VideoWriter::fourcc('m', 'p', '4', 'v'), fps, frameSize, true);
 
       // check if output video opened
       if (!outputVideo.isOpened())

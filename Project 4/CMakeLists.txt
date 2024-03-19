@@ -12,6 +12,10 @@ target_link_libraries(calibrate ${OpenCV_LIBS})
 add_executable(AR augmentedReality.cpp detectCorners/detectCorners.cpp calibration/calibration.cpp)
 target_link_libraries(AR ${OpenCV_LIBS}) 
 
+# Executable for augmented reality
+add_executable(AR2 augmentedRealityMultiple.cpp detectCorners/detectCorners.cpp calibration/calibration.cpp)
+target_link_libraries(AR2 ${OpenCV_LIBS}) 
+
 # Executable for robust feature
 add_executable(feature detectFeatures.cpp)
 target_link_libraries(feature ${OpenCV_LIBS}) 

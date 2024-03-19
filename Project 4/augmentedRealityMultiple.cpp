@@ -73,6 +73,9 @@ int main(int argc, char *argv[])
   {
     *capdev >> image; // get a new frame from the camera, treat as a stream
 
+    // empty vector of corner set
+    multipleCornerSet.clear();
+
     // if no frame, exit
     if (image.empty())
     {
@@ -87,26 +90,29 @@ int main(int argc, char *argv[])
     char keyPressed = waitKey(1);
 
     // if corners are found
-    if (multipleCornerSet.size() > 0) //CHECK THIS
+    if (!multipleCornerSet.empty())
     {
-      // loop through each value of multipleCornerSet
-      // in each loop
-        // get rotations, translations via solvePnP, project 3D axes and project the shape
-      Mat rotations, translations;
+      // loop through each corner set
+      for (size_t i = 0; i < multipleCornerSet.size(); i++)
+      {
+        // get current corner set
+        vector<Point2f> &corner_set = multipleCornerSet[i];
+        Mat rotations, translations;
 
-      // get checkerboard's pose in terms of rotation and translation
-      solvePnP(point_set, corner_set, cameraMat, distortionCoeffs, rotations, translations);
+        // get checkerboard's pose in terms of rotation and translation
+        solvePnP(point_set, corner_set, cameraMat, distortionCoeffs, rotations, translations);
 
-      cout << "Rotation:" << endl
-           << rotations << endl;
-      cout << "Translation:" << endl
-           << translations << endl;
+        cout << "Rotation:" << endl
+             << rotations << endl;
+        cout << "Translation:" << endl
+             << translations << endl;
 
-      // project 3D axes
-      project3DAxes(rotations,translations,cameraMat,distortionCoeffs,image);
+        // project 3D axes
+        project3DAxes(rotations, translations, cameraMat, distortionCoeffs, image);
 
-      // project 3D object
-      projectShape3D(rotations,translations,cameraMat,distortionCoeffs,image);
+        // project 3D object
+        projectShape3D(rotations, translations, cameraMat, distortionCoeffs, image);
+      }
     }
 
     // if user presses 'q' exit program
