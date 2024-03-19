@@ -2,7 +2,7 @@
  * Samuel Lee
  * CS 5330
  * Spring 2024
- * This file includes functions used for calibrating an image
+ * This file includes functions used for calibrating an image and projecting a 3D object in 2D.
  */
 
 #include "opencv2/opencv.hpp"

@@ -2,7 +2,7 @@
  * Samuel Lee
  * CS 5330
  * Spring 2024
- * This program detects robust features.
+ * This program detects robust features using Harris corners.
  */
 
 #include "opencv2/opencv.hpp"
