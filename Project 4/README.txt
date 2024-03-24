@@ -5,6 +5,7 @@ OS: Mac
 IDE: VS Code
 Instructions to Run Program
 - build the entire project
+- I included my calibration data .yml file, so no need to re-calibrate if you don't want to.
 - ./calibrate - program to capture images of the target to calibrate
 	- type 's' to save images
 	- type 'c' to calibrate images and create corresponding matrices and data
