@@ -9,15 +9,14 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset
 from torchvision import datasets
+from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor, Compose
 import torch.nn.functional as F
+import torch.optim as optim
 import matplotlib.pyplot as plt
 
 
 # this class represents a custom neural network
-# given a 28x28 input image
-# 5x5 convolution layer reduces image to 24x24
-#
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super().__init__()
@@ -50,12 +49,14 @@ class NeuralNetwork(nn.Module):
 
 
 # this function loads data from the dataset and returns it
-def load_data(path, boolTrain, boolDownload, transform):
+def load_data(path, boolTrain, boolDownload, transform, batch_size):
     # loads dataset
     data = datasets.MNIST(
         root=path, train=boolTrain, download=boolDownload, transform=transform
     )
-    return data
+
+    # returns DataLoader with dataset
+    return DataLoader(data, batch_size=batch_size, shuffle=boolTrain)
 
 
 # this function sets device to the optimal one
@@ -71,32 +72,114 @@ def set_device():
 
 
 # this function plots sample images from the data set
-def plot_data(data, rows, cols):
+def plot_data(data_loader, rows, cols):
+    # fetch first batch of iamges
+    data_iter = iter(data_loader)
+    images, labels = next(data_iter)
+
     # creates figure where subplots will be located
     figure = plt.figure(figsize=(cols * 3, rows * 2), num="Sample Images")
+
     for i in range(1, cols * rows + 1):
-        sample_idx = i - 1  # get sequentials samples without randomizing
-        img, label = data[sample_idx]
+        img = images[i - 1].squeeze()
+        label = labels[i - 1].item()
+
         figure.add_subplot(rows, cols, i)
         plt.title(f"Label: {label}")
         plt.axis("off")
-        plt.imshow(img.squeeze(), cmap="gray")
+        plt.imshow(img, cmap="gray")
     plt.show()
+
+
+# this function trains the model on training data
+def train_loop(data_loader, model, loss_fn, optimizer, batch_size):
+    # get total dataset size
+    size = len(data_loader.dataset)
+    # sets model for training mode
+    model.train()
+    # loop through each batch in data_loader
+    # X = tensor containing a batch of input images
+    # y = tensor of labels of images
+    for batch, (X, y) in enumerate(data_loader):
+        # compute prediction and loss
+        pred = model(X)
+        loss = loss_fn(pred, y)
+
+        # back propogation
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+        # print loss every 100 batches
+        if batch % 100 == 0 & batch != 0:
+            loss, current = loss.item(), batch * batch_size + len(X)
+            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+
+# this function checks the accuracy/test error of the training model relative to test data
+def test_loop(data_loader, model, loss_fn):
+    # get total dataset size
+    size = len(data_loader.dataset)
+    # sets model for testing mode
+    model.eval()
+    # gets total number of batches
+    num_batches = len(data_loader)
+    # initialize test_loss and correct
+    test_loss, correct = 0, 0
+
+    # by using torch.no_grad(), no gradients are computed during test mode
+    # this ensures that no unnecessary gradient computations are made for memory and speed efficiency
+    with torch.no_grad():
+        for X, y in data_loader:
+            # get prediction
+            pred = model(X)
+            # check loss between prediction of y based on model and actual y
+            test_loss += loss_fn(pred, y).item()
+            # checks correct predictions of all values in tensor pred and adds count to variable correct
+            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+
+    # get average loss and percent correct
+    test_loss /= num_batches
+    correct /= size
+
+    # print summary
+    print(
+        f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
+    )
 
 
 # main function
 def main(argv):
-    # handle any command line arguments in argv
-
-    # load MNIST test dataset
+    # load MNIST test dataset into dataloaders
     transform = Compose([ToTensor()])
-    test_data = load_data("data", True, True, transform)
+    training_data = load_data("data", True, True, transform, batch_size)
+    test_data = load_data("data", False, True, transform, batch_size)
 
     # plot the first 6 digits from test data set
     plot_data(test_data, 2, 3)
 
     # set device
-    set_device()
+    device = set_device()
+
+    # set network and move it to device
+    network = NeuralNetwork().to(device)
+
+    # training/testing variables
+    num_epochs = 5
+    batch_size = 64
+    learning_rate = 0.001
+
+    # loss function and optimizer
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(network.parameters(), lr=learning_rate)
+
+    # train model
+    for t in range(num_epochs):
+        print(f"Epoch #{t+1}\n-------------------------------")
+        train_loop(training_data, network, loss_fn, optimizer, batch_size)
+        test_loop(test_data, network, loss_fn)
+
+    print("Finished training the model.")
 
     # main function code
     return
