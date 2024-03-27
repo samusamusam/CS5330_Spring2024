@@ -10,7 +10,7 @@ from torch import nn
 from torch.utils.data import Dataset
 from torchvision import datasets
 from torch.utils.data import DataLoader
-from torchvision.transforms import ToTensor, Compose
+from torchvision.transforms import ToTensor, Compose, Normalize
 import torch.nn.functional as F
 import torch.optim as optim
 import matplotlib.pyplot as plt
@@ -92,7 +92,16 @@ def plot_data(data_loader, rows, cols):
 
 
 # this function trains the model on training data
-def train_loop(data_loader, model, loss_fn, optimizer, batch_size):
+def train_loop(
+    data_loader,
+    model,
+    loss_fn,
+    optimizer,
+    batch_size,
+    train_losses,
+    train_counter,
+    epoch_idx,
+):
     # get total dataset size
     size = len(data_loader.dataset)
     # sets model for training mode
@@ -101,6 +110,10 @@ def train_loop(data_loader, model, loss_fn, optimizer, batch_size):
     # X = tensor containing a batch of input images
     # y = tensor of labels of images
     for batch, (X, y) in enumerate(data_loader):
+        # empty gradient since it accumulates
+        optimizer.zero_grad()
+        # use same device as model
+        X, y = X.to(model.device), y.to(model.device)
         # compute prediction and loss
         pred = model(X)
         loss = loss_fn(pred, y)
@@ -108,22 +121,21 @@ def train_loop(data_loader, model, loss_fn, optimizer, batch_size):
         # back propogation
         loss.backward()
         optimizer.step()
-        optimizer.zero_grad()
 
-        # print loss every 100 batches
-        if batch % 100 == 0 & batch != 0:
-            loss, current = loss.item(), batch * batch_size + len(X)
+        # print loss every 10 batches
+        if batch % 10 == 0:
+            loss, current = loss.item(), batch * len(X) + len(X)
+            train_losses.append(loss / len(X))
+            train_counter.append((batch * batch_size) + (epoch_idx * size))
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
 # this function checks the accuracy/test error of the training model relative to test data
-def test_loop(data_loader, model, loss_fn):
+def test_loop(data_loader, model, loss_fn, test_losses):
     # get total dataset size
     size = len(data_loader.dataset)
     # sets model for testing mode
     model.eval()
-    # gets total number of batches
-    num_batches = len(data_loader)
     # initialize test_loss and correct
     test_loss, correct = 0, 0
 
@@ -131,6 +143,8 @@ def test_loop(data_loader, model, loss_fn):
     # this ensures that no unnecessary gradient computations are made for memory and speed efficiency
     with torch.no_grad():
         for X, y in data_loader:
+            # use same device as model
+            X, y = X.to(model.device), y.to(model.device)
             # get prediction
             pred = model(X)
             # check loss between prediction of y based on model and actual y
@@ -139,8 +153,9 @@ def test_loop(data_loader, model, loss_fn):
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
 
     # get average loss and percent correct
-    test_loss /= num_batches
+    test_loss /= size
     correct /= size
+    test_losses.append(test_loss)
 
     # print summary
     print(
@@ -148,12 +163,43 @@ def test_loop(data_loader, model, loss_fn):
     )
 
 
+# this function plots the train and test loss data
+def plot_train_data(train_losses, test_losses, train_counter, test_counter):
+    fig = plt.figure()
+    plt.plot(train_counter, train_losses, color="blue")
+    plt.scatter(test_counter, test_losses, color="red")
+    plt.legend(["Train Loss", "Test Loss"], loc="upper right")
+    plt.xlabel("number of training examples seen")
+    plt.ylabel("loss")  # FIND OUT WHAT LOSS THIS IS
+    plt.show()
+
+
+# this function saves the network to a file
+def save_network_to_file(model, file_name):
+    torch.save(model.state_dict(), file_name)
+
+
 # main function
 def main(argv):
+    # training/testing variables
+    num_epochs = 5
+    momentum = 0.5
+    batch_size = 64
+    batch_size_test = 1000
+    learning_rate = 0.001
+
     # load MNIST test dataset into dataloaders
-    transform = Compose([ToTensor()])
+    transform = Compose(
+        [
+            ToTensor(),
+            Normalize(
+                (0.1307,),
+                (0.3081,),
+            ),
+        ]
+    )
     training_data = load_data("data", True, True, transform, batch_size)
-    test_data = load_data("data", False, True, transform, batch_size)
+    test_data = load_data("data", False, True, transform, batch_size_test)
 
     # plot the first 6 digits from test data set
     plot_data(test_data, 2, 3)
@@ -163,23 +209,45 @@ def main(argv):
 
     # set network and move it to device
     network = NeuralNetwork().to(device)
-
-    # training/testing variables
-    num_epochs = 5
-    batch_size = 64
-    learning_rate = 0.001
+    network.device = device
 
     # loss function and optimizer
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(network.parameters(), lr=learning_rate)
+    loss_fn = nn.NLLLoss()
+    optimizer = torch.optim.SGD(
+        network.parameters(), lr=learning_rate, momentum=momentum
+    )
+
+    # lists of training/test losses and counters
+    train_losses = []
+    train_counter = []
+    test_losses = []
+    test_counter = [i * len(training_data.dataset) for i in range(num_epochs + 1)]
+
+    # test model first as benchmark
+    test_loop(test_data, network, loss_fn, test_losses)
 
     # train model
     for t in range(num_epochs):
         print(f"Epoch #{t+1}\n-------------------------------")
-        train_loop(training_data, network, loss_fn, optimizer, batch_size)
-        test_loop(test_data, network, loss_fn)
+        train_loop(
+            training_data,
+            network,
+            loss_fn,
+            optimizer,
+            batch_size,
+            train_losses,
+            train_counter,
+            t,
+        )
+        test_loop(test_data, network, loss_fn, test_losses)
 
     print("Finished training the model.")
+
+    # plot the train and test data
+    plot_train_data(train_losses, test_losses, train_counter, test_counter)
+
+    # save network model to file
+    save_network_to_file(network, "model_weights.pth")
 
     # main function code
     return
