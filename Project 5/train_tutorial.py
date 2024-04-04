@@ -7,12 +7,10 @@
 import sys
 import torch
 from torch import nn
-from torch.utils.data import Dataset
 from torchvision import datasets
 from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor, Compose, Normalize
 import torch.nn.functional as F
-import torch.optim as optim
 import matplotlib.pyplot as plt
 
 
@@ -124,7 +122,7 @@ def train_loop(
 
         # print loss every 10 batches
         if batch % 10 == 0:
-            loss, current = loss.item(), batch * len(X) + len(X)
+            loss, current = loss.item(), batch * batch_size + len(X)
             train_losses.append(loss / len(X))
             train_counter.append((batch * batch_size) + (epoch_idx * size))
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
