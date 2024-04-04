@@ -101,6 +101,8 @@ def load_pretrained_weights():
     # load pretrained weights minus the last layer
     model.load_state_dict(pretrained_weights, strict=False)
 
+    # before replacing linear layer, freeze weights
+
     # freeze all network weights
     for name, param in model.named_parameters():
         if name in ["fc2.weight", "fc2.bias"]:

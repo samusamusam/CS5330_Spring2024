@@ -123,7 +123,7 @@ def train_loop(
         # print loss every 10 batches
         if batch % 10 == 0:
             loss, current = loss.item(), batch * batch_size + len(X)
-            train_losses.append(loss / len(X))
+            train_losses.append(loss)
             train_counter.append((batch * batch_size) + (epoch_idx * size))
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
@@ -151,7 +151,7 @@ def test_loop(data_loader, model, loss_fn, test_losses):
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
 
     # get average loss and percent correct
-    test_loss /= size
+    test_loss /= len(data_loader)
     correct /= size
     test_losses.append(test_loss)
 
