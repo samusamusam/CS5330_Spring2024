@@ -30,38 +30,6 @@ class GreekTransform:
         return torchvision.transforms.functional.invert(x)
 
 
-# this class represents a custom neural network
-class NeuralNetwork(nn.Module):
-    def __init__(self):
-        super().__init__()
-        # convolution layer with 10 5x5 filters
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        # convolution layer with 20 5x5 filters with 10 channels as input
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        # dropout layer with 50%  dropout rate
-        self.drop50 = nn.Dropout2d(p=0.5)
-        # flattening operation
-        self.flatten = nn.Flatten()
-        # linear layers
-        # fc1 has 320 as an input because of how convolution layers and maxpool layers change the feature maps
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, 3)
-
-    def forward(self, x):
-        # applies convolution layer first, then max pooling layer with a 2x2 window, then ReLU
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        # applies second convolution layer, dropout 50%, max pooling, ReLU in that order
-        x = F.relu(F.max_pool2d(self.drop50(self.conv2(x)), 2))
-        # flattens layer
-        x = self.flatten(x)
-        # apply linear layer 1 50 nodes then ReLU
-        x = F.relu(self.fc1(x))
-        # apply linear layer 2
-        x = self.fc2(x)
-        # return log softmax of output
-        return F.log_softmax(x, dim=1)
-
-
 # this function loads data from the image dataset and returns it
 def load_data(path):
     # dataLoader for the Greek data set
@@ -88,27 +56,22 @@ def load_data(path):
 def load_pretrained_weights():
     # get and set device
     device = train_tutorial.set_device()
-    model = NeuralNetwork().to(device)
+    model = train_tutorial.NeuralNetwork().to(device)
     model.device = device
 
     # load pretrained weights
     pretrained_weights = torch.load("model_weights.pth", map_location=device)
 
-    # set last layer values to none/null
-    pretrained_weights.pop("fc2.weight", None)
-    pretrained_weights.pop("fc2.bias", None)
-
     # load pretrained weights minus the last layer
     model.load_state_dict(pretrained_weights, strict=False)
 
-    # before replacing linear layer, freeze weights
+    # freeze parameters
+    for param in model.parameters():
+        param.requires_grad = False
 
-    # freeze all network weights
-    for name, param in model.named_parameters():
-        if name in ["fc2.weight", "fc2.bias"]:
-            param.requires_grad = True
-        else:
-            param.requires_grad = False
+    # replace last layer
+    model.fc2 = nn.Linear(50, 3)
+    model.to(device)
 
     return model, device
 
@@ -161,7 +124,7 @@ def train_loop(
 
         # print loss for each batch
         loss, current = loss.item(), batch * batch_size + len(X)
-        train_losses.append(loss / len(X))
+        train_losses.append(loss)
         train_counter.append((batch * batch_size) + (epoch_idx * size))
         print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
@@ -171,7 +134,7 @@ def plot_train_data(train_losses, train_counter):
     fig = plt.figure()
     plt.plot(train_counter, train_losses, color="blue")
     plt.xlabel("number of training examples seen")
-    plt.ylabel("loss")  # FIND OUT WHAT LOSS THIS IS
+    plt.ylabel("loss")
     plt.show()
 
 
@@ -237,6 +200,24 @@ def prediction_model(images_directory, model, device):
             cv2.destroyAllWindows
 
 
+# this function converts all images to a certain size
+def convert_image_size(images_directory, size):
+    # loop through each image in directory
+    files = os.listdir(images_directory)
+    for file in files:
+        if file.endswith("jpg") or file.endswith("jpeg") or file.endswith("png"):
+            # full file path
+            full_path = os.path.join(images_directory, file)
+
+            # read image
+            image = cv2.imread(full_path)
+
+            # re-size iamge
+            image = cv2.resize(image, (size, size))
+
+            cv2.imwrite(full_path, image)
+
+
 # main function
 def main(argv):
     # load pretrained network model
@@ -246,13 +227,16 @@ def main(argv):
     dataloader = load_data("greek_letters")
 
     # training variables
-    num_epochs = 30
+    num_epochs = 20
     batch_size = 1
     learning_rate = 0.001
+    momentum = 0.5
 
     # loss function and optimizer
     loss_fn = nn.NLLLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.SGD(
+        model.fc2.parameters(), lr=learning_rate, momentum=momentum
+    )
 
     # lists of training losses and counters
     train_losses = []
@@ -281,6 +265,9 @@ def main(argv):
 
     # plot the train loss data
     plot_train_data(train_losses, train_counter)
+
+    # convert all images to 128x128
+    convert_image_size("greek_letters_input_Images", 128)
 
     # use model to label new images
     prediction_model("greek_letters_input_Images", model, device)

@@ -168,7 +168,7 @@ def plot_train_data(train_losses, test_losses, train_counter, test_counter):
     plt.scatter(test_counter, test_losses, color="red")
     plt.legend(["Train Loss", "Test Loss"], loc="upper right")
     plt.xlabel("number of training examples seen")
-    plt.ylabel("loss")  # FIND OUT WHAT LOSS THIS IS
+    plt.ylabel("loss")
     plt.show()
 
 
