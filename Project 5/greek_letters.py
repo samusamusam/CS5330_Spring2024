@@ -14,7 +14,6 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor, Compose, Normalize
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 
@@ -45,7 +44,7 @@ def load_data(path):
                 ]
             ),
         ),
-        batch_size=1,
+        batch_size=3,
         shuffle=True,
     )
 
@@ -128,10 +127,6 @@ def train_loop(
         train_counter.append((batch * batch_size) + (epoch_idx * size))
         print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
-        # print status
-        if batch % 100 == 0:
-            print("Testing...")
-
 
 # this function plots the train loss
 def plot_train_data(train_losses, train_counter):
@@ -158,8 +153,8 @@ def prediction_model(images_directory, model, device):
             # re-size to 28x28
             image = cv2.resize(image, (28, 28))
 
-            # normalize intensities
-            image = image / 255.0
+            # switch black and white colors
+            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
 
             # get tensor image
             tensor_image = (
@@ -231,8 +226,8 @@ def main(argv):
     dataloader = load_data("greek_letters")
 
     # training variables
-    num_epochs = 20
-    batch_size = 1
+    num_epochs = 22
+    batch_size = 3
     learning_rate = 0.001
     momentum = 0.5
 
