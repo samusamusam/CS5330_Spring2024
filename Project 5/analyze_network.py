@@ -1,7 +1,8 @@
 # Samuel Lee
 # CS 5330
 # Spring 2024
-# This program...
+# This program analyzes the first layer of the trained network model and applies
+# each of the filters in the first convolution layer to the first input image.
 
 # import statements
 import cv2

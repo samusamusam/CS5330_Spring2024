@@ -1,12 +1,15 @@
 # Samuel Lee
 # CS 5330
 # Spring 2024
-# This program...
+# This program computes the accuracy and time taken to train a model based on model variables
+# such as convolution filter size, convolution filter count, dropout rate, and more
 
 # import statements
 import train_tutorial
 import sys
+import time
 import torch
+import pandas as pd
 from torch import nn
 from torchvision import datasets
 from torch.utils.data import DataLoader
@@ -39,7 +42,7 @@ class CustomNetwork(nn.Module):
         # applies linear layer
         x = self.fc(x)
         # return network
-        return x
+        return F.log_softmax(x, dim=1)
 
 
 # this function loads data from the dataset and returns it
@@ -59,17 +62,15 @@ def train_test_model(model, train_loader, test_loader, num_epochs):
     momentum = 0.5
     learning_rate = 0.001
     loss_fn = nn.NLLLoss()
-    optimizer = optimizer = torch.optim.SGD(
-        model.parameters(), lr=learning_rate, momentum=momentum
-    )
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
     # start training
     for t in range(num_epochs):
-        print(f"Epoch #{t+1}\n-------------------------------")
+        print(f"Epoch #{t+1}")
         train_loop(train_loader, model, loss_fn, optimizer)
 
     # get accuracy
-    accuracy = 100.0 * test_loop(test_loader, model)
+    accuracy = test_loop(test_loader, model)
 
     return accuracy
 
@@ -114,12 +115,12 @@ def test_loop(data_loader, model):
             X, y = X.to(model.device), y.to(model.device)
             # get prediction
             pred = model(X)
-            # check loss between prediction of y based on model and actual y
             # checks correct predictions of all values in tensor pred and adds count to variable correct
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
 
     # get percent correct
     correct /= size
+    correct *= 100
 
     return correct
 
@@ -127,42 +128,77 @@ def test_loop(data_loader, model):
 # main function
 def main(argv):
     # training/testing variables
-    num_epochs = 5
-    batch_size = 64
     batch_size_test = 1000
     transform = Compose([ToTensor(), Normalize((0.5,), (0.5,))])
 
     # load MNIST test dataset into dataloaders
-    training_data = load_data("fashion_data", True, True, transform, batch_size)
     test_data = load_data("fashion_data", False, True, transform, batch_size_test)
 
     # set device
     device = train_tutorial.set_device()
 
     # set dimensions of model
-    conv_filter_size = [3, 5, 7, 9]
+    conv_filter_size = [3, 5, 7]
     conv_filter_count = [5, 10, 15]
-    dropout_rate = [0.3, 0.4, 0.5, 0.6, 0.7]
+    dropout_rate = [0.3, 0.5, 0.7]
+    epochs = [1, 3]
+    batches = [32, 64]
+
+    # store results
+    results = []
 
     # loop through each of the dimensions by holding one constant
     for size_filter in conv_filter_size:
         for num_filter in conv_filter_count:
             for rate in dropout_rate:
-                # initialize CNN
-                model = CustomNetwork(size_filter, num_filter, rate)
-                model.device = device
+                for epoch in epochs:
+                    for batch in batches:
+                        # settings used
+                        print(
+                            f"Settings: Filter Size: {size_filter}, Number of Filters: {num_filter}, Dropout Rate: {rate}, Epochs: {epoch}, Batch Size: {batch}"
+                        )
+                        print("-------------------------------")
 
-                # start time
+                        # get training dataset
+                        training_data = load_data(
+                            "fashion_data", True, True, transform, batch
+                        )
 
-                # calculate accuracy
-                accuracy = train_test_model(model, training_data, test_data, num_epochs)
+                        # initialize CNN
+                        model = CustomNetwork(size_filter, num_filter, rate).to(device)
+                        model.device = device
 
-                # end time
+                        # start time
+                        start_time = time.time()
 
-                # get difference in time
+                        # calculate accuracy
+                        accuracy = train_test_model(
+                            model, training_data, test_data, epoch
+                        )
 
-                # add results of size_filter,num_filter,rate of accuracy and time to a list of lists
-                # print results as well
+                        # end time
+                        end_time = time.time()
+
+                        # get difference in time
+                        duration = end_time - start_time
+
+                        # add result
+                        settings = f"Filter Size: {size_filter}, Number of Filters: {num_filter}, Dropout Rate: {rate}, Epochs: {epoch}, Batch Size: {batch}"
+                        results.append(
+                            {
+                                "Settings": settings,
+                                "Duration": duration,
+                                "Accuracy": accuracy,
+                            }
+                        )
+                        print("-------------------------------")
+
+    # store results in dataframe
+    results_df = pd.DataFrame(results)
+
+    # print results
+    print(results_df.to_string())
+
     return
 
 

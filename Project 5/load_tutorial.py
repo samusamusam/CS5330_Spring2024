@@ -1,7 +1,7 @@
 # Samuel Lee
 # CS 5330
 # Spring 2024
-# This program...
+# This program loads the network model and applies the model to custom inputs created by the user.
 
 # import statements
 import train_tutorial

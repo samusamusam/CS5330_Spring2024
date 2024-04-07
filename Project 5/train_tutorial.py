@@ -1,7 +1,8 @@
 # Samuel Lee
 # CS 5330
 # Spring 2024
-# This program...
+# This program trains the model based on the MNIST digit dataset, tests the model,
+# plots both the training and test results, and saves the network model weights.
 
 # import statements
 import sys

@@ -128,6 +128,10 @@ def train_loop(
         train_counter.append((batch * batch_size) + (epoch_idx * size))
         print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
+        # print status
+        if batch % 100 == 0:
+            print("Testing...")
+
 
 # this function plots the train loss
 def plot_train_data(train_losses, train_counter):
